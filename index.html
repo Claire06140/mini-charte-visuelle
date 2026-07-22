@@ -117,12 +117,66 @@
       padding-top: 0;
     }
 
+    .section-base,
+    .section-adjust {
+      margin-right: -8px;
+      margin-left: -8px;
+      padding-right: 8px;
+      padding-left: 8px;
+      border-radius: var(--radius);
+    }
+
+    .section-base {
+      margin-bottom: 14px;
+      padding-top: 14px;
+      padding-bottom: 16px;
+      border: 0;
+      background: color-mix(in srgb, var(--brand-bg) 68%, white);
+    }
+
+    .section-adjust {
+      padding-top: 16px;
+      padding-bottom: 18px;
+      border: 0;
+      border-left: 4px solid var(--focus);
+      background: color-mix(in srgb, var(--brand-surface) 74%, white);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
     .section-title {
       margin-bottom: 6px;
       color: var(--muted);
       font-size: 12px;
       font-weight: 800;
       text-transform: uppercase;
+    }
+
+    .section-heading .section-title {
+      margin-bottom: 0;
+    }
+
+    .step-badge {
+      width: 22px;
+      height: 22px;
+      display: inline-grid;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--brand-ink) 92%, var(--brand-muted));
+      color: var(--brand-surface);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .section-adjust .step-badge {
+      background: var(--focus);
     }
 
     .section-help {
@@ -144,20 +198,21 @@
       margin-bottom: 14px;
       max-height: 360px;
       overflow: auto;
-      padding-right: 4px;
+      padding: 3px 7px 3px 3px;
     }
 
     .preset,
     .palette {
       padding: 10px;
-      border: 1px solid var(--line);
+      border: 1px solid transparent;
       border-radius: var(--radius);
-      background: #fffaf4;
+      background: color-mix(in srgb, #fffaf4 78%, white);
       color: var(--ink);
       text-align: left;
     }
 
     .preset {
+      position: relative;
       min-height: 94px;
       display: grid;
       gap: 6px;
@@ -173,26 +228,32 @@
 
     .preset[aria-pressed="true"],
     .palette[aria-pressed="true"] {
-      border-color: var(--focus);
-      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.16);
+      border-color: transparent;
+      background: color-mix(in srgb, var(--brand-ink) 7%, #fffaf4);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-ink) 18%, transparent);
+    }
+
+    .palette[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--focus) 7%, #fffaf4);
+      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.24);
     }
 
     .preset strong {
       display: block;
+      padding-right: 54px;
       font-size: 14px;
     }
 
     .preset-words {
+      padding-right: 54px;
       color: var(--muted);
       font-size: 10.5px;
       line-height: 1.25;
     }
 
     .preset-signals {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: end;
-      gap: 10px;
+      display: block;
+      margin-top: auto;
     }
 
     .preset-samples {
@@ -211,6 +272,9 @@
     }
 
     .preset-visual {
+      position: absolute;
+      top: 12px;
+      right: 10px;
       width: 42px;
       height: 26px;
       overflow: hidden;
@@ -292,9 +356,9 @@
       gap: 6px;
       margin-bottom: 14px;
       padding: 4px;
-      border: 1px solid var(--line);
+      border: 0;
       border-radius: var(--radius);
-      background: rgba(255, 250, 244, 0.72);
+      background: color-mix(in srgb, var(--brand-ink) 7%, #fffaf4);
     }
 
     .adjust-tab {
@@ -308,7 +372,7 @@
     }
 
     .adjust-tab[aria-selected="true"] {
-      background: var(--brand-ink);
+      background: var(--focus);
       color: var(--brand-surface);
     }
 
@@ -363,17 +427,18 @@
       align-items: center;
       gap: 12px;
       padding: 12px;
-      border: 1px solid var(--line);
+      border: 1px solid transparent;
       border-radius: var(--radius);
-      background: #fffaf4;
+      background: color-mix(in srgb, #fffaf4 78%, white);
       color: var(--ink);
       text-align: left;
     }
 
     .font-option[aria-pressed="true"],
     .image-option[aria-pressed="true"] {
-      border-color: var(--focus);
-      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.16);
+      border-color: transparent;
+      background: color-mix(in srgb, var(--focus) 7%, #fffaf4);
+      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.24);
     }
 
     .font-sample {
@@ -801,7 +866,7 @@
     .preview-shell {
       min-height: 0;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) 360px;
+      grid-template-columns: minmax(0, 1fr) minmax(290px, 340px);
       gap: 18px;
       overflow: hidden;
     }
@@ -809,7 +874,7 @@
     .preview-stage {
       min-width: 0;
       overflow: auto;
-      min-height: 620px;
+      min-height: 0;
       display: grid;
       place-items: start center;
       padding: 24px;
@@ -1644,7 +1709,8 @@
     }
 
     .preview-reference-image {
-      min-height: 82px;
+      min-height: 0;
+      aspect-ratio: 16 / 9;
       border: 1px solid color-mix(in srgb, var(--brand-accent) 38%, transparent);
       background:
         linear-gradient(color-mix(in srgb, var(--brand-accent) 12%, transparent), color-mix(in srgb, var(--brand-accent) 12%, transparent)),
@@ -1655,7 +1721,7 @@
     }
 
     .site-hero .preview-reference-image {
-      min-height: 160px;
+      aspect-ratio: 16 / 8;
     }
 
     .offer-side .preview-reference-board {
@@ -1663,11 +1729,11 @@
     }
 
     .offer-side .preview-reference-image {
-      min-height: 56px;
+      aspect-ratio: 4 / 3;
     }
 
     .post-preview .preview-reference-image {
-      min-height: 112px;
+      aspect-ratio: 4 / 3;
     }
 
     .post-preview {
@@ -1927,8 +1993,134 @@
         overflow: visible;
       }
 
+      .preview-stage {
+        order: 1;
+      }
+
       .signal-panel {
-        order: -1;
+        order: 2;
+      }
+    }
+
+    @media (min-width: 1121px) and (max-height: 860px) {
+      aside,
+      main {
+        padding: 18px;
+      }
+
+      .app {
+        grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
+      }
+
+      .preview-shell {
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 310px);
+        gap: 14px;
+      }
+
+      .preview-stage {
+        padding: 16px;
+      }
+
+      .signal-panel {
+        padding: 14px;
+      }
+
+      .site-preview,
+      .post-preview,
+      .offer-preview {
+        padding: 26px;
+      }
+
+      .site-preview {
+        min-height: 0;
+      }
+
+      .site-nav {
+        margin-bottom: 38px;
+      }
+
+      .site-hero {
+        gap: 24px;
+      }
+
+      .site-hero h2,
+      .offer-preview h2,
+      .post-title {
+        font-size: clamp(28px, 2.7vw, 42px);
+      }
+
+      .site-hero p,
+      .offer-preview p,
+      .post-preview p {
+        margin-top: 18px;
+        font-size: 16px;
+      }
+
+      .cta-row {
+        margin-top: 26px;
+      }
+
+      .visual-block {
+        min-height: 230px;
+      }
+
+      .site-hero > .preview-reference-board {
+        width: min(100%, 600px);
+      }
+
+      .post-preview {
+        min-height: 0;
+      }
+
+      .post-card {
+        min-height: 0;
+      }
+
+      .post-title {
+        margin-top: 28px;
+      }
+
+      .offer-preview {
+        min-height: 0;
+      }
+
+      .offer-box {
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr) 200px;
+        gap: 28px;
+      }
+
+      .price {
+        font-size: 46px;
+      }
+    }
+
+    @media (min-width: 1121px) and (max-width: 1380px) {
+      .app {
+        grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
+      }
+
+      .preview-shell {
+        display: block;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        overflow: auto;
+      }
+
+      .preview-stage {
+        display: block;
+        min-height: 0;
+        overflow: visible;
+      }
+
+      .preview {
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      .signal-panel {
+        margin-top: 18px;
+        overflow: visible;
       }
     }
 
@@ -1977,8 +2169,11 @@
         </div>
       </div>
 
-      <section class="section">
-        <h2 class="section-title">Base cohérente</h2>
+      <section class="section section-base">
+        <div class="section-heading">
+          <span class="step-badge" aria-hidden="true">1</span>
+          <h2 class="section-title">Base cohérente</h2>
+        </div>
         <p class="section-help">Commencez par une composition complète : intention, couleurs, typographies, visuels et règles de départ.</p>
         <div class="preset-grid" id="presetGrid"></div>
         <div class="base-actions">
@@ -1987,8 +2182,11 @@
         </div>
       </section>
 
-      <section class="section">
-        <h2 class="section-title">Ajuster finement</h2>
+      <section class="section section-adjust">
+        <div class="section-heading">
+          <span class="step-badge" aria-hidden="true">2</span>
+          <h2 class="section-title">Ajuster finement</h2>
+        </div>
         <p class="section-help">Modifiez un seul type de choix à la fois pour tester sans perdre la cohérence de départ.</p>
 
         <div class="adjust-tabs" role="tablist" aria-label="Types de réglages">

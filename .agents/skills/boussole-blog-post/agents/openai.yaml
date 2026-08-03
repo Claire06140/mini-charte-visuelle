@@ -1,0 +1,4 @@
+interface:
+  display_name: "Rédiger un guide Boussole"
+  short_description: "Préparer et rédiger les guides Boussole"
+  default_prompt: "Utilise $boussole-blog-post pour préparer le plan d’un guide Boussole visuelle à partir de la cartographie validée."

@@ -1,0 +1,3323 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Outil — Boussole visuelle</title>
+  <meta name="description" content="Trouvez, comparez et partagez une direction visuelle claire pour votre projet.">
+  <meta name="posthog-token" content="phc_qJ7mUgbRXFHkSX7HMUzNRSob5SPctNGoqVYNBSsrA6Rv">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Atkinson+Hyperlegible:wght@400;700&family=Cormorant+Garamond:wght@600;700&family=DM+Sans:wght@400;600;700&family=Fraunces:opsz,wght,SOFT,WONK@9..144,500..800,0..100,0..1&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:wght@500;600;700&family=Inter:wght@400;500;600;700;800&family=Lora:wght@500;600;700&family=Manrope:wght@400;600;700;800&family=Merriweather:wght@700&family=Nunito+Sans:opsz,wght@6..12,400..800&family=Playfair+Display:wght@600;700&family=Public+Sans:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Vercel Web Analytics -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+  <script>
+    window.BOUSSOLE_ENTRY = Object.freeze({
+      mode: new URLSearchParams(window.location.search).get("mode") || "free",
+      source: new URLSearchParams(window.location.search).get("src") || new URLSearchParams(window.location.search).get("entry") || "direct"
+    });
+  </script>
+  <script defer src="/assets/analytics.js"></script>
+  <script defer src="/assets/diagnostic.js"></script>
+  <link rel="stylesheet" href="/assets/tool-beta.css">
+  <style>
+    :root {
+      --app-bg: #ebe7df;
+      --panel: #f8f4ec;
+      --line: rgba(46, 39, 32, 0.16);
+      --ink: #2f2922;
+      --muted: #746a60;
+      --focus: #0f766e;
+      --radius: 8px;
+      --brand-bg: #f7f1e8;
+      --brand-surface: #fffaf2;
+      --brand-ink: #3c332a;
+      --brand-muted: #756b60;
+      --brand-accent: #6f8f80;
+      --font-title: "Lora";
+      --font-body: "Nunito Sans";
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      overflow: hidden;
+      background: var(--app-bg);
+      color: var(--ink);
+      font-family: "Inter", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-columns: minmax(340px, 430px) minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    aside {
+      height: 100vh;
+      padding: 24px;
+      border-right: 1px solid var(--line);
+      background: rgba(248, 244, 236, 0.9);
+      overflow: auto;
+    }
+
+    main {
+      min-width: 0;
+      height: 100vh;
+      padding: 24px;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 18px;
+      overflow: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .app-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+
+    .app-title h1 {
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .tiny {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .section {
+      padding: 18px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .section:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .section-base,
+    .section-adjust {
+      margin-right: -8px;
+      margin-left: -8px;
+      padding-right: 8px;
+      padding-left: 8px;
+      border-radius: var(--radius);
+    }
+
+    .section-base {
+      margin-bottom: 14px;
+      padding-top: 14px;
+      padding-bottom: 16px;
+      border: 0;
+      background: color-mix(in srgb, var(--brand-bg) 68%, white);
+    }
+
+    .section-adjust {
+      padding-top: 16px;
+      padding-bottom: 18px;
+      border: 0;
+      border-left: 4px solid var(--focus);
+      background: color-mix(in srgb, var(--brand-surface) 74%, white);
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      margin-bottom: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .section-heading .section-title {
+      margin-bottom: 0;
+    }
+
+    .step-badge {
+      width: 22px;
+      height: 22px;
+      display: inline-grid;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--brand-ink) 92%, var(--brand-muted));
+      color: var(--brand-surface);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .section-adjust .step-badge {
+      background: var(--focus);
+    }
+
+    .section-help {
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .palette-grid {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 14px;
+      max-height: 360px;
+      overflow: auto;
+      padding: 3px 7px 3px 3px;
+    }
+
+    .preset,
+    .palette {
+      padding: 10px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: color-mix(in srgb, #fffaf4 78%, white);
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .preset {
+      position: relative;
+      min-height: 94px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 56px;
+    }
+
+    .preset[aria-pressed="true"],
+    .palette[aria-pressed="true"] {
+      border-color: transparent;
+      background: color-mix(in srgb, var(--brand-ink) 7%, #fffaf4);
+      box-shadow: 0 0 0 2px color-mix(in srgb, var(--brand-ink) 18%, transparent);
+    }
+
+    .palette[aria-pressed="true"] {
+      background: color-mix(in srgb, var(--focus) 7%, #fffaf4);
+      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.24);
+    }
+
+    .preset strong {
+      display: block;
+      padding-right: 54px;
+      font-size: 14px;
+    }
+
+    .preset-words {
+      padding-right: 54px;
+      color: var(--muted);
+      font-size: 10.5px;
+      line-height: 1.25;
+    }
+
+    .preset-signals {
+      display: block;
+      margin-top: auto;
+    }
+
+    .preset-samples {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .preset-aa {
+      color: var(--ink);
+      font-family: var(--preset-title), serif;
+      font-size: 20px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .preset-visual {
+      position: absolute;
+      top: 12px;
+      right: 10px;
+      width: 42px;
+      height: 26px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .swatches {
+      display: flex;
+      gap: 5px;
+    }
+
+    .swatches span {
+      width: 20px;
+      height: 14px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffaf4;
+      color: var(--ink);
+      padding: 10px 11px;
+      outline: none;
+    }
+
+    textarea {
+      min-height: 76px;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus,
+    .adjust-tab:focus-visible,
+    .font-option:focus-visible,
+    .image-option:focus-visible,
+    .preset:focus-visible,
+    .palette:focus-visible,
+    .tab:focus-visible,
+    .command:focus-visible {
+      border-color: var(--focus);
+      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.16);
+    }
+
+    .base-actions {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .base-summary {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .adjust-tabs {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 6px;
+      margin-bottom: 14px;
+      padding: 4px;
+      border: 0;
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--brand-ink) 7%, #fffaf4);
+    }
+
+    .adjust-tab {
+      min-height: 34px;
+      border: 0;
+      border-radius: 6px;
+      padding: 7px 8px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .adjust-tab[aria-selected="true"] {
+      background: var(--focus);
+      color: var(--brand-surface);
+    }
+
+    .adjust-panel {
+      display: none;
+    }
+
+    .adjust-panel.is-active {
+      display: block;
+    }
+
+    .adjust-group + .adjust-group {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .color-field {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    input[type="color"] {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    .font-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .font-option,
+    .image-option {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      background: color-mix(in srgb, #fffaf4 78%, white);
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .font-option[aria-pressed="true"],
+    .image-option[aria-pressed="true"] {
+      border-color: transparent;
+      background: color-mix(in srgb, var(--focus) 7%, #fffaf4);
+      box-shadow: 0 0 0 2px rgba(15, 118, 110, 0.24);
+    }
+
+    .font-sample {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .font-sample b {
+      font-family: var(--sample-title), serif;
+      font-size: 22px;
+      line-height: 1.08;
+    }
+
+    .font-sample span {
+      color: var(--muted);
+      font-family: var(--sample-body), sans-serif;
+      font-size: 13px;
+    }
+
+    .font-tag {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.2;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .image-style-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .image-copy {
+      display: grid;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .image-copy strong {
+      font-size: 14px;
+      line-height: 1.15;
+    }
+
+    .image-copy span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .image-copy .image-rule {
+      color: color-mix(in srgb, var(--muted) 82%, var(--ink));
+      font-size: 11px;
+    }
+
+    .image-thumb {
+      position: relative;
+      width: 74px;
+      height: 50px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: var(--brand-surface);
+    }
+
+    .image-thumb::before,
+    .image-thumb::after {
+      content: "";
+      position: absolute;
+      display: block;
+    }
+
+    .image-thumb-photo-lumineuse {
+      background:
+        radial-gradient(circle at 74% 22%, color-mix(in srgb, var(--brand-accent) 34%, white) 0 10px, transparent 11px),
+        linear-gradient(135deg, var(--brand-surface), color-mix(in srgb, var(--brand-accent) 18%, var(--brand-bg)));
+    }
+
+    .image-thumb-photo-lumineuse::before {
+      inset: auto 0 0;
+      height: 22px;
+      background: linear-gradient(135deg, color-mix(in srgb, var(--brand-accent) 45%, white), var(--brand-muted));
+      clip-path: polygon(0 100%, 34% 28%, 55% 64%, 74% 24%, 100% 100%);
+      opacity: 0.64;
+    }
+
+    .image-thumb-studio-sobre {
+      background: var(--brand-bg);
+    }
+
+    .image-thumb-studio-sobre::before {
+      inset: 10px 16px;
+      border: 2px solid var(--brand-ink);
+    }
+
+    .image-thumb-studio-sobre::after {
+      right: 11px;
+      bottom: 9px;
+      width: 18px;
+      height: 18px;
+      background: var(--brand-accent);
+    }
+
+    .image-thumb-capture-preuve {
+      background:
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 10px 13px / 34px 4px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 10px 23px / 48px 3px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 10px 32px / 26px 3px no-repeat,
+        var(--brand-surface);
+    }
+
+    .image-thumb-capture-preuve::after {
+      right: 9px;
+      bottom: 9px;
+      width: 18px;
+      height: 24px;
+      background:
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 0 10px / 4px 14px no-repeat,
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 7px 4px / 4px 20px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 14px 0 / 4px 24px no-repeat;
+      opacity: 0.8;
+    }
+
+    .image-thumb-illustration-ligne {
+      background: var(--brand-surface);
+    }
+
+    .image-thumb-illustration-ligne::before {
+      inset: 11px 13px;
+      border: 2px solid var(--brand-accent);
+      border-radius: 50%;
+    }
+
+    .image-thumb-illustration-ligne::after {
+      left: 13px;
+      bottom: 12px;
+      width: 46px;
+      height: 18px;
+      border-bottom: 2px solid var(--brand-ink);
+      border-left: 2px solid var(--brand-ink);
+      transform: skewX(-16deg);
+    }
+
+    .image-thumb-collage-expressif {
+      background: color-mix(in srgb, var(--brand-accent) 12%, var(--brand-bg));
+    }
+
+    .image-thumb-collage-expressif::before {
+      left: 10px;
+      top: 12px;
+      width: 32px;
+      height: 24px;
+      background: var(--brand-accent);
+      transform: rotate(-8deg);
+    }
+
+    .image-thumb-collage-expressif::after {
+      right: 10px;
+      top: 8px;
+      width: 26px;
+      height: 34px;
+      border: 2px solid var(--brand-ink);
+      transform: rotate(10deg);
+    }
+
+    .image-thumb-textures-matieres {
+      background:
+        repeating-linear-gradient(30deg, color-mix(in srgb, var(--brand-accent) 32%, transparent) 0 4px, transparent 4px 10px),
+        repeating-linear-gradient(-8deg, color-mix(in srgb, var(--brand-muted) 26%, transparent) 0 2px, transparent 2px 8px),
+        var(--brand-bg);
+    }
+
+    .image-thumb-formes-abstraites {
+      background: var(--brand-surface);
+    }
+
+    .image-thumb-formes-abstraites::before {
+      inset: 12px auto auto 13px;
+      width: 22px;
+      height: 22px;
+      background: var(--brand-ink);
+      border-radius: 50%;
+    }
+
+    .image-thumb-formes-abstraites::after {
+      right: 11px;
+      bottom: 10px;
+      width: 28px;
+      height: 18px;
+      border: 2px solid var(--brand-accent);
+    }
+
+    .image-thumb-portrait-contexte {
+      background:
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 36px 15px / 24px 3px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 36px 25px / 18px 3px no-repeat,
+        var(--brand-surface);
+    }
+
+    .image-thumb-portrait-contexte::before {
+      left: 10px;
+      top: 10px;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--brand-accent);
+    }
+
+    .image-thumb-portrait-contexte::after {
+      left: 8px;
+      bottom: 7px;
+      width: 26px;
+      height: 14px;
+      border-radius: 18px 18px 4px 4px;
+      background: color-mix(in srgb, var(--brand-accent) 42%, var(--brand-ink));
+    }
+
+    .image-thumb-photo-lifestyle {
+      background:
+        radial-gradient(circle at 23px 17px, color-mix(in srgb, var(--brand-accent) 42%, white) 0 9px, transparent 10px),
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 12px 34px / 28px 5px no-repeat,
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 48px 18px / 14px 22px no-repeat,
+        linear-gradient(135deg, var(--brand-surface), color-mix(in srgb, var(--brand-accent) 13%, var(--brand-bg)));
+    }
+
+    .image-thumb-photo-documentaire {
+      background:
+        radial-gradient(circle at 22px 18px, var(--brand-accent) 0 8px, transparent 9px),
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 12px 33px / 40px 4px no-repeat,
+        repeating-linear-gradient(90deg, transparent 0 11px, color-mix(in srgb, var(--brand-muted) 18%, transparent) 11px 12px),
+        var(--brand-surface);
+    }
+
+    .image-thumb-photo-documentaire::after {
+      right: 8px;
+      top: 10px;
+      width: 18px;
+      height: 28px;
+      border: 2px solid var(--brand-ink);
+      transform: rotate(-6deg);
+    }
+
+    .image-thumb-portrait-editorial {
+      background: linear-gradient(135deg, color-mix(in srgb, var(--brand-accent) 16%, var(--brand-bg)), var(--brand-surface));
+    }
+
+    .image-thumb-portrait-editorial::before {
+      left: 12px;
+      top: 10px;
+      width: 28px;
+      height: 32px;
+      border-radius: 50% 50% 44% 44%;
+      background: var(--brand-accent);
+      box-shadow: 20px 5px 0 -8px var(--brand-ink);
+    }
+
+    .image-thumb-portrait-editorial::after {
+      right: 10px;
+      bottom: 10px;
+      width: 26px;
+      height: 2px;
+      background: var(--brand-ink);
+      box-shadow: 0 -8px 0 var(--brand-muted);
+    }
+
+    .image-thumb-studio-objet {
+      background:
+        radial-gradient(ellipse at 50% 78%, color-mix(in srgb, var(--brand-ink) 14%, transparent) 0 24px, transparent 25px),
+        var(--brand-bg);
+    }
+
+    .image-thumb-studio-objet::before {
+      left: 24px;
+      top: 14px;
+      width: 26px;
+      height: 25px;
+      border: 2px solid var(--brand-ink);
+      background: var(--brand-surface);
+    }
+
+    .image-thumb-studio-objet::after {
+      left: 20px;
+      bottom: 10px;
+      width: 34px;
+      height: 7px;
+      background: var(--brand-accent);
+    }
+
+    .image-thumb-illustration-flat {
+      background:
+        radial-gradient(circle at 24px 18px, var(--brand-accent) 0 10px, transparent 11px),
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 17px 29px / 18px 14px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 43px 16px / 20px 8px no-repeat,
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 43px 30px / 16px 8px no-repeat,
+        var(--brand-surface);
+    }
+
+    .image-thumb-collage-editorial {
+      background: color-mix(in srgb, var(--brand-accent) 10%, var(--brand-bg));
+    }
+
+    .image-thumb-collage-editorial::before {
+      left: 10px;
+      top: 12px;
+      width: 32px;
+      height: 24px;
+      background: var(--brand-accent);
+      transform: rotate(-8deg);
+    }
+
+    .image-thumb-collage-editorial::after {
+      right: 10px;
+      top: 8px;
+      width: 28px;
+      height: 35px;
+      border: 2px solid var(--brand-ink);
+      background: color-mix(in srgb, var(--brand-surface) 68%, transparent);
+      transform: rotate(9deg);
+    }
+
+    .image-thumb-formes-graphiques {
+      background:
+        radial-gradient(circle at 20px 20px, var(--brand-ink) 0 11px, transparent 12px),
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 42px 15px / 20px 20px no-repeat,
+        var(--brand-surface);
+    }
+
+    .image-thumb-none {
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--brand-muted) 8%, var(--brand-surface));
+    }
+
+    .image-thumb-none::before {
+      width: 30px;
+      height: 30px;
+      inset: auto;
+      border: 3px solid color-mix(in srgb, var(--brand-ink) 88%, var(--brand-muted));
+      border-radius: 50%;
+    }
+
+    .image-thumb-none::after {
+      left: 50%;
+      top: 50%;
+      width: 34px;
+      height: 3px;
+      background: color-mix(in srgb, var(--brand-ink) 88%, var(--brand-muted));
+      transform: translate(-50%, -50%) rotate(-42deg);
+      transform-origin: center;
+    }
+
+    .image-thumb-reference {
+      width: 98px;
+      height: 62px;
+      background:
+        linear-gradient(color-mix(in srgb, var(--brand-accent) 10%, transparent), color-mix(in srgb, var(--brand-accent) 10%, transparent)),
+        var(--brand-surface);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .image-thumb-reference::before,
+    .image-thumb-reference::after {
+      content: none;
+    }
+
+    .commands {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .command {
+      min-height: 38px;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fffaf4;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .command.primary {
+      border-color: var(--brand-accent);
+      background: var(--brand-accent);
+      color: var(--brand-surface);
+    }
+
+    .command:disabled {
+      cursor: default;
+      opacity: 0.54;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(248, 244, 236, 0.86);
+    }
+
+    .tab {
+      min-height: 34px;
+      border: 0;
+      border-radius: 6px;
+      padding: 7px 11px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .tab[aria-selected="true"] {
+      background: var(--brand-ink);
+      color: var(--brand-surface);
+    }
+
+    .preview-shell {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(290px, 340px);
+      gap: 18px;
+      overflow: hidden;
+    }
+
+    .preview-stage {
+      min-width: 0;
+      overflow: auto;
+      min-height: 0;
+      display: grid;
+      place-items: start center;
+      padding: 24px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(90deg, rgba(47, 41, 34, 0.04) 1px, transparent 1px),
+        linear-gradient(rgba(47, 41, 34, 0.04) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+
+    .preview {
+      display: none;
+      width: min(100%, 920px);
+      color: var(--brand-ink);
+      background: var(--brand-bg);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      box-shadow: 0 18px 55px rgba(47, 41, 34, 0.12);
+    }
+
+    .preview.is-active {
+      display: block;
+    }
+
+    .site-preview {
+      min-height: 650px;
+      padding: 32px;
+    }
+
+    .site-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      margin-bottom: 58px;
+      font-family: var(--font-body), sans-serif;
+      font-weight: 700;
+    }
+
+    .site-nav span {
+      color: var(--brand-muted);
+      font-size: 13px;
+    }
+
+    .site-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(220px, 0.68fr);
+      gap: 30px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      margin-bottom: 14px;
+      color: var(--brand-accent);
+      font-family: var(--font-body), sans-serif;
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .site-hero h2,
+    .offer-preview h2,
+    .post-title {
+      font-family: var(--font-title), serif;
+      font-size: clamp(30px, 3vw, 46px);
+      line-height: 1.04;
+      overflow-wrap: break-word;
+      hyphens: none;
+    }
+
+    .site-hero p,
+    .offer-preview p,
+    .post-preview p {
+      margin-top: 22px;
+      color: var(--brand-muted);
+      font-family: var(--font-body), sans-serif;
+      font-size: 18px;
+      line-height: 1.48;
+    }
+
+    .cta-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-top: 32px;
+    }
+
+    .cta {
+      min-height: 44px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 10px 18px;
+      background: var(--brand-accent);
+      color: var(--brand-surface);
+      font-family: var(--font-body), sans-serif;
+      font-weight: 800;
+    }
+
+    .quiet-link {
+      color: var(--brand-ink);
+      font-family: var(--font-body), sans-serif;
+      font-weight: 700;
+    }
+
+    .visual-block {
+      position: relative;
+      min-height: 260px;
+      display: grid;
+      align-content: stretch;
+      gap: 14px;
+      padding: 18px;
+      overflow: hidden;
+      background: var(--brand-surface);
+      border: 1px solid color-mix(in srgb, var(--brand-accent) 42%, transparent);
+    }
+
+    .visual-block.is-compact {
+      min-height: 150px;
+      gap: 9px;
+      padding: 12px;
+    }
+
+    body[data-image-style="none"] .visual-block {
+      display: none;
+    }
+
+    .visual-top {
+      position: relative;
+      min-height: 122px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 78% 24%, var(--brand-accent) 0 34px, transparent 35px),
+        linear-gradient(135deg, var(--brand-surface), color-mix(in srgb, var(--brand-accent) 24%, var(--brand-bg)));
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .visual-block.is-compact .visual-top {
+      min-height: 78px;
+    }
+
+    .visual-top::before,
+    .visual-top::after,
+    .visual-grid div::before,
+    .visual-grid div::after {
+      content: "";
+      position: absolute;
+      display: block;
+    }
+
+    .visual-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .visual-block.is-compact .visual-grid {
+      gap: 8px;
+    }
+
+    .visual-grid div {
+      position: relative;
+      min-height: 76px;
+      overflow: hidden;
+      background: color-mix(in srgb, var(--brand-accent) 18%, var(--brand-surface));
+      border: 1px solid rgba(0, 0, 0, 0.08);
+    }
+
+    .visual-block.is-compact .visual-grid div {
+      min-height: 42px;
+    }
+
+    body[data-image-style="photo-lumineuse"] .visual-top {
+      background:
+        radial-gradient(circle at 77% 24%, color-mix(in srgb, var(--brand-accent) 35%, white) 0 32px, transparent 33px),
+        linear-gradient(color-mix(in srgb, var(--brand-muted) 18%, transparent), color-mix(in srgb, var(--brand-muted) 18%, transparent)) 20px 20px / 82px 58px no-repeat,
+        linear-gradient(135deg, var(--brand-surface), color-mix(in srgb, var(--brand-accent) 14%, var(--brand-bg)));
+    }
+
+    body[data-image-style="photo-lumineuse"] .visual-top::before {
+      left: 44px;
+      top: 38px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--brand-accent) 42%, white);
+      box-shadow: 0 36px 0 -6px color-mix(in srgb, var(--brand-accent) 32%, var(--brand-muted));
+    }
+
+    body[data-image-style="photo-lumineuse"] .visual-grid div {
+      background:
+        radial-gradient(circle at 30% 32%, color-mix(in srgb, var(--brand-accent) 25%, white) 0 17px, transparent 18px),
+        linear-gradient(color-mix(in srgb, var(--brand-muted) 20%, transparent), color-mix(in srgb, var(--brand-muted) 20%, transparent)) 50% 72% / 54% 18px no-repeat,
+        linear-gradient(135deg, var(--brand-surface), color-mix(in srgb, var(--brand-accent) 10%, var(--brand-bg)));
+    }
+
+    body[data-image-style="studio-sobre"] .visual-top {
+      background:
+        linear-gradient(color-mix(in srgb, var(--brand-muted) 22%, transparent), color-mix(in srgb, var(--brand-muted) 22%, transparent)) 50% 76% / 66% 2px no-repeat,
+        radial-gradient(ellipse at 50% 83%, color-mix(in srgb, var(--brand-ink) 10%, transparent) 0 42px, transparent 43px),
+        var(--brand-bg);
+    }
+
+    body[data-image-style="studio-sobre"] .visual-top::before {
+      left: 50%;
+      top: 34px;
+      width: 72px;
+      height: 72px;
+      border: 3px solid var(--brand-ink);
+      border-radius: 50%;
+      transform: translateX(-50%);
+    }
+
+    body[data-image-style="studio-sobre"] .visual-top::after {
+      left: calc(50% - 56px);
+      bottom: 20px;
+      width: 112px;
+      height: 22px;
+      background: var(--brand-accent);
+    }
+
+    body[data-image-style="studio-sobre"] .visual-grid div {
+      background: var(--brand-surface);
+    }
+
+    body[data-image-style="studio-sobre"] .visual-grid div::before {
+      left: 50%;
+      top: 50%;
+      width: 34px;
+      height: 34px;
+      border: 2px solid color-mix(in srgb, var(--brand-ink) 72%, transparent);
+      transform: translate(-50%, -50%);
+    }
+
+    body[data-image-style="capture-preuve"] .visual-top {
+      background:
+        linear-gradient(color-mix(in srgb, var(--brand-ink) 14%, transparent), color-mix(in srgb, var(--brand-ink) 14%, transparent)) 0 0 / 100% 20px no-repeat,
+        radial-gradient(circle at 12px 10px, var(--brand-accent) 0 3px, transparent 4px),
+        radial-gradient(circle at 24px 10px, var(--brand-muted) 0 3px, transparent 4px),
+        radial-gradient(circle at 36px 10px, var(--brand-muted) 0 3px, transparent 4px),
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 28px 42px / 128px 8px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 28px 65px / 210px 5px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 28px 85px / 162px 5px no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="capture-preuve"] .visual-top::after {
+      right: 28px;
+      bottom: 20px;
+      width: 96px;
+      height: 76px;
+      background:
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 0 36px / 14px 34px no-repeat,
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 24px 18px / 14px 52px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 48px 4px / 14px 66px no-repeat,
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 72px 28px / 14px 42px no-repeat;
+      opacity: 0.86;
+    }
+
+    body[data-image-style="capture-preuve"] .visual-grid div {
+      background:
+        repeating-linear-gradient(0deg, transparent 0 13px, color-mix(in srgb, var(--brand-muted) 20%, transparent) 13px 14px),
+        var(--brand-surface);
+    }
+
+    body[data-image-style="capture-preuve"] .visual-grid div::before {
+      left: 18px;
+      right: 18px;
+      top: 22px;
+      height: 18px;
+      border-left: 3px solid var(--brand-accent);
+      border-bottom: 3px solid var(--brand-ink);
+      transform: skewY(-9deg);
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-top,
+    body[data-image-style="illustration-ligne"] .visual-grid div {
+      background: var(--brand-surface);
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-top::before {
+      left: 42px;
+      top: 26px;
+      width: 74px;
+      height: 74px;
+      border: 3px solid var(--brand-accent);
+      border-radius: 50%;
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-top::after {
+      right: 40px;
+      bottom: 25px;
+      width: 112px;
+      height: 50px;
+      border-left: 3px solid var(--brand-ink);
+      border-bottom: 3px solid var(--brand-ink);
+      transform: skewX(-18deg);
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-block {
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--brand-accent) 22%, transparent) 1px, transparent 1px),
+        linear-gradient(color-mix(in srgb, var(--brand-accent) 22%, transparent) 1px, transparent 1px),
+        var(--brand-surface);
+      background-size: 22px 22px;
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-grid div::before {
+      inset: 18px 24px;
+      border: 2px solid var(--brand-accent);
+      border-radius: 50%;
+    }
+
+    body[data-image-style="collage-expressif"] .visual-top {
+      background: color-mix(in srgb, var(--brand-accent) 12%, var(--brand-bg));
+    }
+
+    body[data-image-style="collage-expressif"] .visual-top::before {
+      left: 36px;
+      top: 28px;
+      width: 122px;
+      height: 72px;
+      background:
+        linear-gradient(color-mix(in srgb, white 24%, transparent), color-mix(in srgb, white 24%, transparent)),
+        var(--brand-accent);
+      transform: rotate(-7deg);
+    }
+
+    body[data-image-style="collage-expressif"] .visual-top::after {
+      right: 35px;
+      top: 18px;
+      width: 90px;
+      height: 95px;
+      border: 3px solid var(--brand-ink);
+      transform: rotate(9deg);
+    }
+
+    body[data-image-style="collage-expressif"] .visual-block::after {
+      content: "";
+      position: absolute;
+      left: 48%;
+      top: 24px;
+      width: 82px;
+      height: 118px;
+      background: color-mix(in srgb, var(--brand-muted) 36%, var(--brand-surface));
+      transform: rotate(4deg);
+      opacity: 0.92;
+    }
+
+    body[data-image-style="collage-expressif"] .visual-grid div:first-child {
+      transform: rotate(-2deg);
+      background: var(--brand-accent);
+    }
+
+    body[data-image-style="collage-expressif"] .visual-grid div:last-child {
+      transform: rotate(2deg);
+      background: var(--brand-surface);
+      border: 2px solid var(--brand-ink);
+    }
+
+    body[data-image-style="textures-matieres"] .visual-top,
+    body[data-image-style="textures-matieres"] .visual-grid div {
+      background:
+        repeating-linear-gradient(28deg, color-mix(in srgb, var(--brand-accent) 30%, transparent) 0 5px, transparent 5px 12px),
+        repeating-linear-gradient(-8deg, color-mix(in srgb, var(--brand-muted) 24%, transparent) 0 2px, transparent 2px 9px),
+        var(--brand-bg);
+    }
+
+    body[data-image-style="textures-matieres"] .visual-top::before {
+      inset: 22px 34px;
+      border: 1px solid color-mix(in srgb, var(--brand-ink) 35%, transparent);
+      background: color-mix(in srgb, var(--brand-surface) 82%, transparent);
+    }
+
+    body[data-image-style="textures-matieres"] .visual-top::after {
+      right: 28px;
+      bottom: 24px;
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background:
+        repeating-linear-gradient(90deg, color-mix(in srgb, var(--brand-ink) 22%, transparent) 0 2px, transparent 2px 7px),
+        color-mix(in srgb, var(--brand-accent) 24%, var(--brand-surface));
+    }
+
+    body[data-image-style="formes-abstraites"] .visual-top,
+    body[data-image-style="formes-abstraites"] .visual-grid div {
+      background: var(--brand-surface);
+    }
+
+    body[data-image-style="formes-abstraites"] .visual-top::before {
+      left: 42px;
+      top: 35px;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: var(--brand-ink);
+    }
+
+    body[data-image-style="formes-abstraites"] .visual-top::after {
+      right: 42px;
+      bottom: 32px;
+      width: 118px;
+      height: 44px;
+      border: 3px solid var(--brand-accent);
+    }
+
+    body[data-image-style="formes-abstraites"] .visual-grid div::before {
+      inset: 20px auto auto 22px;
+      width: 36px;
+      height: 36px;
+      background: var(--brand-accent);
+    }
+
+    body[data-image-style="portrait-contexte"] .visual-top {
+      background:
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 150px 40px / 132px 6px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 150px 65px / 96px 6px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 150px 90px / 168px 6px no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="portrait-contexte"] .visual-top::before {
+      left: 46px;
+      top: 30px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--brand-accent);
+    }
+
+    body[data-image-style="portrait-contexte"] .visual-top::after {
+      left: 36px;
+      bottom: 18px;
+      width: 72px;
+      height: 36px;
+      border-radius: 44px 44px 8px 8px;
+      background: color-mix(in srgb, var(--brand-accent) 42%, var(--brand-ink));
+    }
+
+    body[data-image-style="portrait-contexte"] .visual-grid div {
+      background:
+        radial-gradient(circle at 26px 30px, var(--brand-accent) 0 18px, transparent 19px),
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 58px 28px / 72px 5px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 58px 44px / 48px 5px no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="photo-lifestyle"] .visual-top {
+      background:
+        radial-gradient(circle at 28% 33%, color-mix(in srgb, var(--brand-accent) 42%, white) 0 28px, transparent 29px),
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 18% 76% / 28% 8px no-repeat,
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 76% 38% / 12% 44% no-repeat,
+        linear-gradient(color-mix(in srgb, var(--brand-muted) 18%, transparent), color-mix(in srgb, var(--brand-muted) 18%, transparent)) 72% 82% / 32% 8px no-repeat,
+        linear-gradient(135deg, var(--brand-surface), color-mix(in srgb, var(--brand-accent) 12%, var(--brand-bg)));
+    }
+
+    body[data-image-style="photo-lifestyle"] .visual-top::before {
+      left: 22%;
+      top: 48%;
+      width: 18%;
+      height: 34%;
+      border-radius: 36px 36px 8px 8px;
+      background: color-mix(in srgb, var(--brand-accent) 38%, var(--brand-ink));
+    }
+
+    body[data-image-style="photo-lifestyle"] .visual-top::after {
+      right: 16%;
+      bottom: 16%;
+      width: 18%;
+      height: 28%;
+      border: 2px solid color-mix(in srgb, var(--brand-ink) 72%, transparent);
+      background: color-mix(in srgb, var(--brand-surface) 70%, transparent);
+    }
+
+    body[data-image-style="photo-lifestyle"] .visual-grid div {
+      background:
+        radial-gradient(circle at 28% 34%, color-mix(in srgb, var(--brand-accent) 35%, white) 0 16px, transparent 17px),
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 45% 68% / 46% 7px no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="photo-documentaire"] .visual-top {
+      background:
+        repeating-linear-gradient(90deg, transparent 0 32px, color-mix(in srgb, var(--brand-muted) 12%, transparent) 32px 34px),
+        radial-gradient(circle at 24% 35%, var(--brand-accent) 0 24px, transparent 25px),
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 14% 72% / 44% 7px no-repeat,
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 68% 30% / 18% 46% no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="photo-documentaire"] .visual-top::before {
+      left: 20%;
+      top: 48%;
+      width: 20%;
+      height: 34%;
+      border-radius: 30px 30px 6px 6px;
+      background: color-mix(in srgb, var(--brand-accent) 46%, var(--brand-muted));
+    }
+
+    body[data-image-style="photo-documentaire"] .visual-top::after {
+      right: 13%;
+      bottom: 18%;
+      width: 22%;
+      height: 28%;
+      border: 2px solid var(--brand-ink);
+      transform: rotate(-4deg);
+    }
+
+    body[data-image-style="photo-documentaire"] .visual-grid div {
+      background:
+        radial-gradient(circle at 26px 28px, var(--brand-accent) 0 15px, transparent 16px),
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 54px 27px / 62px 5px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 54px 43px / 42px 5px no-repeat,
+        repeating-linear-gradient(90deg, transparent 0 22px, color-mix(in srgb, var(--brand-muted) 14%, transparent) 22px 24px),
+        var(--brand-surface);
+    }
+
+    body[data-image-style="portrait-editorial"] .visual-top {
+      background:
+        linear-gradient(115deg, color-mix(in srgb, var(--brand-accent) 16%, var(--brand-bg)) 0 52%, var(--brand-surface) 52% 100%);
+    }
+
+    body[data-image-style="portrait-editorial"] .visual-top::before {
+      left: 18%;
+      top: 18%;
+      width: 24%;
+      height: 54%;
+      border-radius: 50% 50% 42% 42%;
+      background: var(--brand-accent);
+      box-shadow: 32px 10px 0 -16px var(--brand-ink);
+    }
+
+    body[data-image-style="portrait-editorial"] .visual-top::after {
+      right: 12%;
+      bottom: 24%;
+      width: 32%;
+      height: 3px;
+      background: var(--brand-ink);
+      box-shadow: 0 -18px 0 var(--brand-muted), 0 18px 0 var(--brand-accent);
+    }
+
+    body[data-image-style="portrait-editorial"] .visual-grid div {
+      background:
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 18px 20px / 45% 3px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 18px 38px / 64% 3px no-repeat,
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 18px 56px / 30% 3px no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="studio-objet"] .visual-top {
+      background:
+        radial-gradient(ellipse at 50% 83%, color-mix(in srgb, var(--brand-ink) 14%, transparent) 0 86px, transparent 87px),
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 20% 82% / 60% 2px no-repeat,
+        var(--brand-bg);
+    }
+
+    body[data-image-style="studio-objet"] .visual-top::before {
+      left: 50%;
+      top: 26%;
+      width: 24%;
+      height: 42%;
+      border: 3px solid var(--brand-ink);
+      background: var(--brand-surface);
+      transform: translateX(-50%);
+    }
+
+    body[data-image-style="studio-objet"] .visual-top::after {
+      left: 38%;
+      bottom: 18%;
+      width: 24%;
+      height: 10%;
+      background: var(--brand-accent);
+    }
+
+    body[data-image-style="studio-objet"] .visual-grid div {
+      background:
+        radial-gradient(ellipse at 50% 70%, color-mix(in srgb, var(--brand-ink) 12%, transparent) 0 36px, transparent 37px),
+        var(--brand-surface);
+    }
+
+    body[data-image-style="studio-objet"] .visual-grid div::before {
+      left: 50%;
+      top: 38%;
+      width: 32px;
+      height: 30px;
+      border: 2px solid var(--brand-ink);
+      background: color-mix(in srgb, var(--brand-accent) 12%, var(--brand-surface));
+      transform: translate(-50%, -50%);
+    }
+
+    body[data-image-style="capture-preuve"] .visual-top {
+      background:
+        linear-gradient(color-mix(in srgb, var(--brand-ink) 14%, transparent), color-mix(in srgb, var(--brand-ink) 14%, transparent)) 0 0 / 100% 22px no-repeat,
+        radial-gradient(circle at 12px 11px, var(--brand-accent) 0 3px, transparent 4px),
+        radial-gradient(circle at 25px 11px, var(--brand-muted) 0 3px, transparent 4px),
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 28px 42px / 34% 8px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 28px 65px / 52% 5px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 28px 85px / 42% 5px no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="capture-preuve"] .visual-top::after {
+      right: 8%;
+      bottom: 16%;
+      width: 28%;
+      height: 58%;
+      background:
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 0 65% / 15% 35% no-repeat,
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 28% 34% / 15% 66% no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 56% 12% / 15% 88% no-repeat,
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 84% 48% / 15% 52% no-repeat;
+    }
+
+    body[data-image-style="capture-preuve"] .visual-grid div {
+      background:
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 14px 54px / 3px 8px no-repeat,
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 28px 46px / 3px 16px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 42px 34px / 3px 28px no-repeat,
+        repeating-linear-gradient(0deg, transparent 0 13px, color-mix(in srgb, var(--brand-muted) 20%, transparent) 13px 14px),
+        var(--brand-surface);
+    }
+
+    body[data-image-style="capture-preuve"] .visual-grid div::before {
+      left: 66px;
+      right: 16px;
+      top: 24px;
+      height: 3px;
+      background: var(--brand-ink);
+      box-shadow: 0 14px 0 var(--brand-muted), 0 28px 0 var(--brand-accent);
+      border: 0;
+      transform: none;
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-block {
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--brand-accent) 18%, transparent) 1px, transparent 1px),
+        linear-gradient(color-mix(in srgb, var(--brand-accent) 18%, transparent) 1px, transparent 1px),
+        var(--brand-surface);
+      background-size: 24px 24px;
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-top,
+    body[data-image-style="illustration-ligne"] .visual-grid div {
+      background: color-mix(in srgb, var(--brand-surface) 86%, transparent);
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-top::before {
+      left: 18%;
+      top: 24%;
+      width: 22%;
+      height: 46%;
+      border: 3px solid var(--brand-accent);
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-top::after {
+      right: 15%;
+      bottom: 24%;
+      width: 34%;
+      height: 30%;
+      border-left: 3px solid var(--brand-ink);
+      border-bottom: 3px solid var(--brand-ink);
+      background: transparent;
+      transform: skewX(-16deg);
+    }
+
+    body[data-image-style="illustration-ligne"] .visual-grid div::before {
+      inset: 18px 26px;
+      border: 2px solid var(--brand-accent);
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    body[data-image-style="illustration-flat"] .visual-top {
+      background:
+        radial-gradient(circle at 27% 31%, var(--brand-accent) 0 28px, transparent 29px),
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 21% 61% / 14% 32% no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 60% 36% / 23% 18% no-repeat,
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 58% 64% / 27% 12% no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="illustration-flat"] .visual-top::before {
+      left: 17%;
+      bottom: 16%;
+      width: 34%;
+      height: 3px;
+      background: var(--brand-ink);
+      transform: rotate(-8deg);
+    }
+
+    body[data-image-style="illustration-flat"] .visual-top::after {
+      right: 17%;
+      top: 18%;
+      width: 10%;
+      height: 18%;
+      border-radius: 50%;
+      background: color-mix(in srgb, var(--brand-accent) 36%, white);
+    }
+
+    body[data-image-style="illustration-flat"] .visual-grid div {
+      background:
+        radial-gradient(circle at 28px 28px, var(--brand-accent) 0 16px, transparent 17px),
+        linear-gradient(var(--brand-accent), var(--brand-accent)) 18px 44px / 22px 18px no-repeat,
+        linear-gradient(var(--brand-muted), var(--brand-muted)) 62px 24px / 44px 8px no-repeat,
+        linear-gradient(var(--brand-ink), var(--brand-ink)) 62px 44px / 32px 8px no-repeat,
+        var(--brand-surface);
+    }
+
+    body[data-image-style="collage-editorial"] .visual-top {
+      background: color-mix(in srgb, var(--brand-accent) 10%, var(--brand-bg));
+    }
+
+    body[data-image-style="collage-editorial"] .visual-top::before {
+      left: 12%;
+      top: 24%;
+      width: 34%;
+      height: 46%;
+      background:
+        linear-gradient(color-mix(in srgb, white 22%, transparent), color-mix(in srgb, white 22%, transparent)),
+        var(--brand-accent);
+      transform: rotate(-7deg);
+    }
+
+    body[data-image-style="collage-editorial"] .visual-top::after {
+      right: 13%;
+      top: 18%;
+      width: 30%;
+      height: 62%;
+      border: 3px solid var(--brand-ink);
+      background: color-mix(in srgb, var(--brand-surface) 68%, transparent);
+      transform: rotate(8deg);
+    }
+
+    body[data-image-style="collage-editorial"] .visual-grid div:first-child {
+      transform: rotate(-2deg);
+      background: var(--brand-accent);
+    }
+
+    body[data-image-style="collage-editorial"] .visual-grid div:last-child {
+      transform: rotate(2deg);
+      background: var(--brand-surface);
+      border: 2px solid var(--brand-ink);
+    }
+
+    body[data-image-style="textures-matieres"] .visual-top,
+    body[data-image-style="textures-matieres"] .visual-grid div {
+      background:
+        repeating-linear-gradient(28deg, color-mix(in srgb, var(--brand-accent) 30%, transparent) 0 5px, transparent 5px 12px),
+        repeating-linear-gradient(-8deg, color-mix(in srgb, var(--brand-muted) 24%, transparent) 0 2px, transparent 2px 9px),
+        var(--brand-bg);
+    }
+
+    body[data-image-style="textures-matieres"] .visual-top::before {
+      inset: 18% 14%;
+      border: 1px solid color-mix(in srgb, var(--brand-ink) 35%, transparent);
+      background: color-mix(in srgb, var(--brand-surface) 82%, transparent);
+      border-radius: 0;
+    }
+
+    body[data-image-style="textures-matieres"] .visual-top::after {
+      right: 12%;
+      bottom: 17%;
+      width: 24%;
+      height: 48%;
+      border-radius: 50%;
+      background:
+        repeating-linear-gradient(90deg, color-mix(in srgb, var(--brand-ink) 22%, transparent) 0 2px, transparent 2px 7px),
+        color-mix(in srgb, var(--brand-accent) 24%, var(--brand-surface));
+    }
+
+    body[data-image-style="formes-graphiques"] .visual-top,
+    body[data-image-style="formes-graphiques"] .visual-grid div {
+      background: var(--brand-surface);
+    }
+
+    body[data-image-style="formes-graphiques"] .visual-top::before {
+      left: 16%;
+      top: 28%;
+      width: 20%;
+      height: 44%;
+      border-radius: 50%;
+      background: var(--brand-ink);
+    }
+
+    body[data-image-style="formes-graphiques"] .visual-top::after {
+      right: 14%;
+      bottom: 25%;
+      width: 36%;
+      height: 34%;
+      border: 3px solid var(--brand-accent);
+      background: transparent;
+    }
+
+    body[data-image-style="formes-graphiques"] .visual-grid div::before {
+      inset: 20px auto auto 22px;
+      width: 36px;
+      height: 36px;
+      background: var(--brand-accent);
+      border: 0;
+      border-radius: 0;
+    }
+
+    .post-visual {
+      margin-top: 24px;
+    }
+
+    .preview-reference-board {
+      display: grid;
+      gap: 8px;
+      margin-top: 14px;
+    }
+
+    .site-hero > .preview-reference-board {
+      grid-column: 1 / -1;
+      justify-self: center;
+      width: min(100%, 520px);
+      margin-top: 12px;
+    }
+
+    body[data-image-style="none"] .site-hero > .preview-reference-board {
+      grid-row: auto;
+      align-self: auto;
+    }
+
+    .preview-reference-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 7px;
+    }
+
+    .preview-reference-image {
+      min-height: 0;
+      aspect-ratio: 16 / 9;
+      border: 1px solid color-mix(in srgb, var(--brand-accent) 38%, transparent);
+      background:
+        linear-gradient(color-mix(in srgb, var(--brand-accent) 12%, transparent), color-mix(in srgb, var(--brand-accent) 12%, transparent)),
+        var(--brand-surface);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .site-hero .preview-reference-image {
+      aspect-ratio: 16 / 8;
+    }
+
+    .offer-side .preview-reference-board {
+      margin-top: 0;
+    }
+
+    .offer-side .preview-reference-image {
+      aspect-ratio: 4 / 3;
+    }
+
+    .post-preview .preview-reference-image {
+      aspect-ratio: 4 / 3;
+    }
+
+    .post-preview {
+      width: min(100%, 620px);
+      min-height: 700px;
+      padding: 34px;
+    }
+
+    .post-card {
+      min-height: 632px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 34px;
+      background: var(--brand-surface);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--brand-muted);
+      font-family: var(--font-body), sans-serif;
+      font-weight: 700;
+    }
+
+    .post-mark {
+      width: 54px;
+      height: 54px;
+      background: var(--brand-accent);
+      border-radius: 50%;
+    }
+
+    .post-title {
+      max-width: 440px;
+      margin-top: 34px;
+    }
+
+    .post-foot {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 20px;
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 2px solid var(--brand-ink);
+    }
+
+    .post-foot strong {
+      color: var(--brand-accent);
+      font-family: var(--font-body), sans-serif;
+      font-size: 18px;
+    }
+
+    .mini-swatches {
+      display: flex;
+      gap: 8px;
+    }
+
+    .mini-swatches span {
+      width: 30px;
+      height: 30px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    .offer-preview {
+      width: min(100%, 760px);
+      min-height: 520px;
+      padding: 42px;
+    }
+
+    .offer-box {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 220px;
+      gap: 36px;
+      min-height: 436px;
+      padding: 34px;
+      background: var(--brand-surface);
+      border-left: 12px solid var(--brand-accent);
+    }
+
+    .offer-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 24px;
+      color: var(--brand-muted);
+      font-family: var(--font-body), sans-serif;
+      font-size: 15px;
+      line-height: 1.35;
+    }
+
+    .offer-list div {
+      padding-bottom: 8px;
+      border-bottom: 1px solid color-mix(in srgb, var(--brand-ink) 18%, transparent);
+    }
+
+    .offer-side {
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+    }
+
+    .offer-side .visual-block {
+      min-height: 172px;
+    }
+
+    .price {
+      font-family: var(--font-title), serif;
+      font-size: 56px;
+      line-height: 1;
+    }
+
+    .signal-panel {
+      height: auto;
+      min-height: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      background: rgba(248, 244, 236, 0.86);
+      overflow: auto;
+    }
+
+    .signal-panel h2 {
+      margin-bottom: 14px;
+      font-size: 16px;
+    }
+
+    .side-editor {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    .mini-charte {
+      display: grid;
+      gap: 16px;
+    }
+
+    .recap-row {
+      display: grid;
+      gap: 5px;
+    }
+
+    .recap-label {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .recap-value {
+      color: var(--ink);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .recap-swatches {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+
+    .recap-swatch {
+      min-height: 44px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+    }
+
+    .reference-board {
+      display: grid;
+      gap: 8px;
+    }
+
+    .reference-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 6px;
+    }
+
+    .reference-image {
+      min-height: 72px;
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background:
+        linear-gradient(color-mix(in srgb, var(--brand-accent) 12%, transparent), color-mix(in srgb, var(--brand-accent) 12%, transparent)),
+        var(--brand-surface);
+      background-position: center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .reference-note {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .reference-note strong {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .rules {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.38;
+    }
+
+    .rule {
+      margin-bottom: 8px;
+      padding-left: 2px;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      max-width: 320px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      background: #fffaf4;
+      color: var(--ink);
+      box-shadow: 0 12px 34px rgba(47, 41, 34, 0.16);
+      transform: translateY(120%);
+      transition: transform 180ms ease;
+      z-index: 20;
+    }
+
+    .toast.is-visible {
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1120px) {
+      body {
+        overflow: auto;
+      }
+
+      .app,
+      .preview-shell {
+        height: auto;
+        min-height: 100vh;
+        grid-template-columns: 1fr;
+        overflow: visible;
+      }
+
+      aside {
+        height: auto;
+        min-height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      main {
+        height: auto;
+        overflow: visible;
+      }
+
+      .preview-stage {
+        order: 1;
+      }
+
+      .signal-panel {
+        order: 2;
+      }
+    }
+
+    @media (min-width: 1121px) and (max-height: 860px) {
+      aside,
+      main {
+        padding: 18px;
+      }
+
+      .app {
+        grid-template-columns: minmax(320px, 390px) minmax(0, 1fr);
+      }
+
+      .preview-shell {
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 310px);
+        gap: 14px;
+      }
+
+      .preview-stage {
+        padding: 16px;
+      }
+
+      .signal-panel {
+        padding: 14px;
+      }
+
+      .site-preview,
+      .post-preview,
+      .offer-preview {
+        padding: 26px;
+      }
+
+      .site-preview {
+        min-height: 0;
+      }
+
+      .site-nav {
+        margin-bottom: 38px;
+      }
+
+      .site-hero {
+        gap: 24px;
+      }
+
+      .site-hero h2,
+      .offer-preview h2,
+      .post-title {
+        font-size: clamp(28px, 2.7vw, 42px);
+      }
+
+      .site-hero p,
+      .offer-preview p,
+      .post-preview p {
+        margin-top: 18px;
+        font-size: 16px;
+      }
+
+      .cta-row {
+        margin-top: 26px;
+      }
+
+      .visual-block {
+        min-height: 230px;
+      }
+
+      .site-hero > .preview-reference-board {
+        width: min(100%, 600px);
+      }
+
+      .post-preview {
+        min-height: 0;
+      }
+
+      .post-card {
+        min-height: 0;
+      }
+
+      .post-title {
+        margin-top: 28px;
+      }
+
+      .offer-preview {
+        min-height: 0;
+      }
+
+      .offer-box {
+        min-height: 0;
+        grid-template-columns: minmax(0, 1fr) 200px;
+        gap: 28px;
+      }
+
+      .price {
+        font-size: 46px;
+      }
+    }
+
+    @media (min-width: 1121px) and (max-width: 1380px) {
+      .app {
+        grid-template-columns: minmax(360px, 430px) minmax(0, 1fr);
+      }
+
+      .preview-shell {
+        display: block;
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-rows: auto auto;
+        overflow: auto;
+      }
+
+      .preview-stage {
+        display: block;
+        min-height: 0;
+        overflow: visible;
+      }
+
+      .preview {
+        margin-right: auto;
+        margin-left: auto;
+      }
+
+      .signal-panel {
+        margin-top: 18px;
+        overflow: visible;
+      }
+    }
+
+    @media (max-width: 720px) {
+      aside,
+      main {
+        padding: 16px;
+      }
+
+      .preset-grid,
+      .color-grid,
+      .site-hero,
+      .offer-box {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .tabs {
+        overflow-x: auto;
+      }
+
+      .preview-stage {
+        min-height: 520px;
+        padding: 12px;
+      }
+
+      .site-preview,
+      .post-preview,
+      .offer-preview {
+        padding: 20px;
+      }
+    }
+  </style>
+</head>
+<body data-image-style="photo-lifestyle">
+  <div class="shared-banner" id="sharedBanner" hidden>
+    <div><strong>Direction partagée</strong><span>Vous pouvez l’explorer telle quelle ou créer votre propre version.</span></div>
+    <button class="command" id="cloneShared" type="button">Dupliquer et modifier</button>
+  </div>
+  <div class="app">
+    <aside>
+      <div class="app-title">
+        <div>
+          <h1>Boussole visuelle</h1>
+          <p class="tiny">Passez d’une intention à une direction visible.</p>
+        </div>
+      </div>
+
+      <section class="section section-base">
+        <div class="section-heading">
+          <span class="step-badge" aria-hidden="true">1</span>
+          <h2 class="section-title">Base cohérente</h2>
+        </div>
+        <p class="section-help">Commencez par une composition complète : intention, couleurs, typographies, visuels et règles de départ.</p>
+        <div class="preset-grid" id="presetGrid"></div>
+        <div class="base-actions">
+          <p class="base-summary" id="baseSummary">Base actuelle : Rassurant</p>
+          <button class="command" id="resetPreset" type="button">Revenir à la base</button>
+        </div>
+      </section>
+
+      <section class="section section-adjust">
+        <div class="section-heading">
+          <span class="step-badge" aria-hidden="true">2</span>
+          <h2 class="section-title">Ajuster finement</h2>
+        </div>
+        <p class="section-help">Modifiez un seul type de choix à la fois pour tester sans perdre la cohérence de départ.</p>
+
+        <div class="adjust-tabs" role="tablist" aria-label="Types de réglages">
+          <button class="adjust-tab" type="button" role="tab" aria-selected="true" aria-controls="panel-colors" data-adjust-tab="colors">Couleurs</button>
+          <button class="adjust-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-fonts" data-adjust-tab="fonts">Typos</button>
+          <button class="adjust-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-visuals" data-adjust-tab="visuals">Visuels</button>
+          <button class="adjust-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-texts" data-adjust-tab="texts">Textes</button>
+        </div>
+
+        <div class="adjust-panel is-active" id="panel-colors" role="tabpanel" data-adjust-panel="colors">
+          <h3 class="section-title">Couleurs</h3>
+          <p class="section-help">Changez la palette entière, ou ajustez une couleur si vous savez ce que vous testez.</p>
+          <div class="palette-grid" id="paletteGrid"></div>
+          <div class="color-grid">
+            <div class="color-field">
+              <input id="brandBg" type="color" value="#f7f1e8">
+              <label for="brandBg">Fond</label>
+            </div>
+            <div class="color-field">
+              <input id="brandSurface" type="color" value="#fffaf2">
+              <label for="brandSurface">Surface</label>
+            </div>
+            <div class="color-field">
+              <input id="brandInk" type="color" value="#3c332a">
+              <label for="brandInk">Texte</label>
+            </div>
+            <div class="color-field">
+              <input id="brandMuted" type="color" value="#756b60">
+              <label for="brandMuted">Secondaire</label>
+            </div>
+            <div class="color-field">
+              <input id="brandAccent" type="color" value="#6f8f80">
+              <label for="brandAccent">Accent</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="adjust-panel" id="panel-fonts" role="tabpanel" data-adjust-panel="fonts" hidden>
+          <h3 class="section-title">Typographies</h3>
+          <p class="section-help">Chaque duo montre le rendu titre + texte. Le changement se voit dans l’aperçu.</p>
+          <div class="font-list" id="fontList"></div>
+        </div>
+
+        <div class="adjust-panel" id="panel-visuals" role="tabpanel" data-adjust-panel="visuals" hidden>
+          <div class="adjust-group">
+            <h3 class="section-title">Images de référence</h3>
+            <p class="section-help">Choisissez le type d’image qui aide à vous projeter : photo, portrait, preuve, illustration ou matière.</p>
+            <div class="image-style-list" id="imageStyleList"></div>
+          </div>
+          <div class="adjust-group">
+            <h3 class="section-title">Illustration générée</h3>
+            <p class="section-help">Ajoutez un rendu graphique qui réagit aux couleurs, ou choisissez aucune illustration si l’image suffit.</p>
+            <div class="image-style-list" id="visualStyleList"></div>
+          </div>
+        </div>
+
+        <div class="adjust-panel" id="panel-texts" role="tabpanel" data-adjust-panel="texts" hidden>
+          <h3 class="section-title">Textes de test</h3>
+          <p class="section-help">Modifiez ces textes pour voir si la direction tient avec votre vrai message.</p>
+          <div class="field">
+            <label for="brandName">Nom</label>
+            <input id="brandName" type="text" value="Atelier Nova" maxlength="80">
+          </div>
+          <div class="field">
+            <label for="perceptionWords">Perception recherchée</label>
+            <input id="perceptionWords" type="text" value="rassurant, clair, fiable" maxlength="120">
+          </div>
+          <div class="field">
+            <label for="headline">Phrase principale</label>
+            <textarea id="headline" maxlength="160">Clarifier votre image pour inspirer confiance.</textarea>
+          </div>
+          <div class="field">
+            <label for="bodyText">Texte court</label>
+            <textarea id="bodyText" maxlength="400">Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.</textarea>
+          </div>
+          <div class="field">
+            <label for="ctaText">Action</label>
+            <input id="ctaText" type="text" value="Découvrir l’offre" maxlength="80">
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Comparer et choisir</h2>
+        <div class="commands compare-commands">
+          <button class="command" id="saveVariantA" type="button">Enregistrer A</button>
+          <button class="command" id="saveVariantB" type="button">Enregistrer B</button>
+          <button class="command" id="openComparison" type="button" disabled>Comparer A/B</button>
+        </div>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Récupérer le résultat</h2>
+        <div class="commands">
+          <button class="command primary" id="copySummary" type="button">Copier la mini-charte</button>
+          <button class="command" id="printResult" type="button">Imprimer / PDF</button>
+          <button class="command" id="copyLink" type="button">Partager le lien</button>
+        </div>
+      </section>
+
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div>
+          <p class="tiny">Aperçu instantané</p>
+          <h2 id="previewTitle">Atelier Nova</h2>
+        </div>
+        <div class="tabs" role="tablist" aria-label="Formats de rendu">
+          <button class="tab" type="button" role="tab" aria-selected="true" data-view="site">Site</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-view="post">Post</button>
+          <button class="tab" type="button" role="tab" aria-selected="false" data-view="offer">Offre</button>
+        </div>
+      </div>
+
+      <div class="preview-shell">
+        <div class="preview-stage">
+          <section class="preview site-preview is-active" data-preview="site" aria-label="Aperçu site">
+            <div class="site-nav">
+              <strong data-bind="brand">Atelier Nova</strong>
+              <span data-bind="words">rassurant, clair, fiable</span>
+            </div>
+            <div class="site-hero">
+              <div>
+                <p class="eyebrow" data-bind="direction">Rassurant</p>
+                <h2 data-bind="headline">Clarifier votre image pour inspirer confiance.</h2>
+                <p data-bind="body">Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.</p>
+                <div class="cta-row">
+                  <span class="cta" data-bind="cta">Découvrir l’offre</span>
+                  <span class="quiet-link">Voir la méthode</span>
+                </div>
+              </div>
+              <div class="visual-block" aria-hidden="true">
+                <div class="visual-top"></div>
+                <div class="visual-grid">
+                  <div></div>
+                  <div></div>
+                </div>
+              </div>
+              <div class="preview-reference-board" aria-hidden="true">
+                <div class="preview-reference-grid" data-preview-refs></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="preview post-preview" data-preview="post" aria-label="Aperçu post">
+            <div class="post-card">
+              <div class="post-meta">
+                <span data-bind="brand">Atelier Nova</span>
+                <div class="post-mark" aria-hidden="true"></div>
+              </div>
+              <div>
+                <h2 class="post-title" data-bind="headline">Clarifier votre image pour inspirer confiance.</h2>
+                <p data-bind="body">Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.</p>
+                <div class="visual-block is-compact post-visual" aria-hidden="true">
+                  <div class="visual-top"></div>
+                  <div class="visual-grid">
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+                <div class="preview-reference-board" aria-hidden="true">
+                  <div class="preview-reference-grid" data-preview-refs></div>
+                </div>
+              </div>
+              <div class="post-foot">
+                <strong data-bind="cta">Découvrir l’offre</strong>
+                <div class="mini-swatches" aria-hidden="true">
+                  <span style="background: var(--brand-bg)"></span>
+                  <span style="background: var(--brand-surface)"></span>
+                  <span style="background: var(--brand-accent)"></span>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="preview offer-preview" data-preview="offer" aria-label="Aperçu offre">
+            <div class="offer-box">
+              <div>
+                <p class="eyebrow" data-bind="brand">Atelier Nova</p>
+                <h2 data-bind="headline">Clarifier votre image pour inspirer confiance.</h2>
+                <p data-bind="body">Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.</p>
+              </div>
+              <div class="offer-side">
+                <div>
+                  <p class="tiny">Perception</p>
+                  <p class="price" data-bind="direction">Rassurant</p>
+                </div>
+                <div class="visual-block is-compact" aria-hidden="true">
+                  <div class="visual-top"></div>
+                  <div class="visual-grid">
+                    <div></div>
+                    <div></div>
+                  </div>
+                </div>
+                <div class="preview-reference-board" aria-hidden="true">
+                  <div class="preview-reference-grid" data-preview-refs></div>
+                </div>
+                <span class="cta" data-bind="cta">Découvrir l’offre</span>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <aside class="signal-panel" aria-label="Mini-charte générée">
+          <h2>Mini-charte</h2>
+          <div class="mini-charte">
+            <div class="recap-row">
+              <span class="recap-label">Perception</span>
+              <span class="recap-value" id="recapWords">rassurant, clair, fiable</span>
+            </div>
+            <div class="recap-row">
+              <span class="recap-label">Couleurs</span>
+              <div class="recap-swatches" id="recapSwatches"></div>
+            </div>
+            <div class="recap-row">
+              <span class="recap-label">Typographies</span>
+              <span class="recap-value" id="recapFonts">Lora + Nunito Sans</span>
+            </div>
+            <div class="recap-row">
+              <span class="recap-label">Illustration CSS</span>
+              <span class="recap-value" id="recapVisual">Photo lifestyle lumineuse</span>
+            </div>
+            <div class="recap-row">
+              <span class="recap-label">Images</span>
+              <span class="recap-value" id="recapImages">Photo lifestyle lumineuse</span>
+            </div>
+            <div class="reference-board" id="referenceBoard">
+              <span class="recap-label">Références visuelles</span>
+              <div class="reference-grid" id="referenceGrid" aria-hidden="true"></div>
+              <p class="reference-note" id="referenceNote"></p>
+              <p class="reference-note" id="referenceAvoid"></p>
+            </div>
+            <div class="recap-row">
+              <span class="recap-label">Règles de départ</span>
+              <ul class="rules" id="ruleList"></ul>
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <div class="beta-modal" id="diagnosticModal" role="dialog" aria-modal="true" aria-labelledby="diagnosticTitle" hidden></div>
+  <div class="beta-modal" id="comparisonModal" role="dialog" aria-modal="true" aria-labelledby="comparisonTitle" hidden></div>
+  <section class="print-sheet" id="printSheet" aria-hidden="true"></section>
+
+  <script>
+    const presets = [
+      {
+        id: "rassurant",
+        label: "Rassurant",
+        words: "rassurant, clair, fiable",
+        colors: ["#f7f1e8", "#fffaf2", "#3c332a", "#756b60", "#6f8f80"],
+        fontPair: "lora-nunito",
+        imageStyle: "photo-lifestyle",
+        headline: "Clarifier votre image pour inspirer confiance.",
+        body: "Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.",
+        rules: [
+          "Contrastes calmes, peu de couleurs fortes.",
+          "Titres chaleureux, textes très lisibles.",
+          "Photos lumineuses, cadrages simples, respiration."
+        ]
+      },
+      {
+        id: "expert",
+        label: "Expert",
+        words: "expert, précis, solide",
+        colors: ["#f4f2ed", "#ffffff", "#22262b", "#69707a", "#315f8d"],
+        fontPair: "plex",
+        visualStyle: "capture-preuve",
+        imageStyle: "portrait-editorial",
+        headline: "Des décisions claires, appuyées par les faits.",
+        body: "Une image sobre qui met les preuves, la structure et la méthode au premier plan.",
+        rules: [
+          "Peu d’effets, beaucoup d’alignement.",
+          "Titres nets, données et preuves visibles.",
+          "Palette restreinte, accent réservé aux points clés."
+        ]
+      },
+      {
+        id: "creatif",
+        label: "Créatif",
+        words: "créatif, vivant, singulier",
+        colors: ["#faf1e9", "#fff7ef", "#241d25", "#756473", "#e24b3c"],
+        fontPair: "fraunces-space",
+        imageStyle: "collage-editorial",
+        headline: "Oser une présence plus mémorable.",
+        body: "Une direction expressive, avec du rythme, des contrastes et des détails distinctifs.",
+        rules: [
+          "Accent fort assumé, mais pas partout.",
+          "Compositions moins symétriques, plus rythmées.",
+          "Typo expressive pour les titres, lisibilité pour le corps."
+        ]
+      },
+      {
+        id: "premium",
+        label: "Premium",
+        words: "premium, élégant, sélectif",
+        colors: ["#f6f1ea", "#fffdf8", "#1f1b18", "#756d66", "#9b7a42"],
+        fontPair: "playfair-inter",
+        imageStyle: "studio-objet",
+        headline: "Une expérience plus soignée, dès le premier contact.",
+        body: "Des signes sobres, précis et espacés pour faire monter la valeur perçue.",
+        rules: [
+          "Beaucoup d’espace, peu d’éléments.",
+          "Accent rare, utilisé comme détail de valeur.",
+          "Images très propres, sans surcharge."
+        ]
+      },
+      {
+        id: "accessible",
+        label: "Accessible",
+        words: "accessible, simple, humain",
+        colors: ["#f8f3e7", "#ffffff", "#263238", "#6a716f", "#00856f"],
+        fontPair: "atkinson-inter",
+        imageStyle: "illustration-flat",
+        headline: "Comprendre vite, avancer simplement.",
+        body: "Une image directe, lisible et accueillante pour réduire la distance avec votre audience.",
+        rules: [
+          "Contraste lisible et vocabulaire visuel simple.",
+          "Boutons et informations très identifiables.",
+          "Formes franches, sans sophistication inutile."
+        ]
+      },
+      {
+        id: "energique",
+        label: "Énergique",
+        words: "énergique, direct, motivant",
+        colors: ["#f7f5ee", "#fffdf7", "#1c1b18", "#6b6760", "#ff5a2f"],
+        fontPair: "archivo-manrope",
+        imageStyle: "photo-documentaire",
+        headline: "Passer à l’action sans tourner autour.",
+        body: "Une présence visuelle dynamique pour donner de l’élan et clarifier la prochaine étape.",
+        rules: [
+          "Titres courts, très visibles.",
+          "Accent chaud pour l’action et les priorités.",
+          "Rythme marqué, blocs francs, hiérarchie nette."
+        ]
+      },
+      {
+        id: "minimal",
+        label: "Minimal",
+        words: "minimal, moderne, net",
+        colors: ["#f5f5f2", "#ffffff", "#202124", "#70757a", "#111827"],
+        fontPair: "dm-inter",
+        imageStyle: "formes-graphiques",
+        headline: "Moins de bruit, plus de clarté.",
+        body: "Une direction visuelle discrète qui laisse respirer le message et les choix importants.",
+        rules: [
+          "Palette neutre, accent très contrôlé.",
+          "Hiérarchie typographique stricte.",
+          "Illustrations et photos très peu chargées."
+        ]
+      },
+      {
+        id: "artisanal",
+        label: "Artisanal",
+        words: "artisanal, sensible, authentique",
+        colors: ["#f5eadc", "#fff9f1", "#382b24", "#7c6b5c", "#a65f3d"],
+        fontPair: "cormorant-work",
+        imageStyle: "textures-matieres",
+        headline: "Faire sentir la main derrière le projet.",
+        body: "Une image plus texturée, chaleureuse et incarnée, sans perdre en lisibilité.",
+        rules: [
+          "Matières, textures, détails imparfaits.",
+          "Titre sensible, texte simple et stable.",
+          "Couleurs naturelles, accent terreux ou chaud."
+        ]
+      }
+    ];
+
+    const colorPalettes = [
+      { id: "sage", label: "Sauge calme", colors: ["#f7f1e8", "#fffaf2", "#3c332a", "#756b60", "#6f8f80"] },
+      { id: "blueprint", label: "Bleu preuves", colors: ["#f4f2ed", "#ffffff", "#22262b", "#69707a", "#315f8d"] },
+      { id: "coral", label: "Corail expressif", colors: ["#faf1e9", "#fff7ef", "#241d25", "#756473", "#e24b3c"] },
+      { id: "gold", label: "Doré premium", colors: ["#f6f1ea", "#fffdf8", "#1f1b18", "#756d66", "#9b7a42"] },
+      { id: "teal", label: "Vert accessible", colors: ["#f8f3e7", "#ffffff", "#263238", "#6a716f", "#00856f"] },
+      { id: "flame", label: "Orange action", colors: ["#f7f5ee", "#fffdf7", "#1c1b18", "#6b6760", "#ff5a2f"] },
+      { id: "mono", label: "Noir minimal", colors: ["#f5f5f2", "#ffffff", "#202124", "#70757a", "#111827"] },
+      { id: "terracotta", label: "Terre artisanale", colors: ["#f5eadc", "#fff9f1", "#382b24", "#7c6b5c", "#a65f3d"] },
+      { id: "lavender", label: "Lavande douce", colors: ["#f8f3fa", "#ffffff", "#2d2634", "#766d80", "#8a6fb0"] },
+      { id: "mint", label: "Menthe fraîche", colors: ["#edf7f2", "#ffffff", "#19312b", "#64756f", "#28a676"] },
+      { id: "navy", label: "Marine sérieux", colors: ["#f1f4f7", "#ffffff", "#172033", "#667084", "#2457a6"] },
+      { id: "rose", label: "Rose relationnel", colors: ["#fbf1f2", "#fffafa", "#33262a", "#78676c", "#c95b72"] },
+      { id: "sun", label: "Jaune optimiste", colors: ["#fff8e7", "#fffdf6", "#292113", "#716955", "#e3a018"] },
+      { id: "forest", label: "Forêt stable", colors: ["#eef3ed", "#fbfdf8", "#1f2c24", "#637064", "#3f7a52"] },
+      { id: "cobalt", label: "Cobalt impact", colors: ["#f2f4ff", "#ffffff", "#171b2f", "#686d82", "#304ffe"] },
+      { id: "plum", label: "Prune sensible", colors: ["#f8f0f5", "#fffafd", "#321f2c", "#7a6472", "#8f3f71"] }
+    ];
+
+    const fontPairs = [
+      { id: "lora-nunito", label: "Chaleureux lisible", title: "Lora", body: "Nunito Sans" },
+      { id: "plex", label: "Structuré expert", title: "IBM Plex Serif", body: "IBM Plex Sans" },
+      { id: "fraunces-space", label: "Expressif moderne", title: "Fraunces", body: "Space Grotesk" },
+      { id: "playfair-inter", label: "Élégant premium", title: "Playfair Display", body: "Inter" },
+      { id: "atkinson-inter", label: "Accessible net", title: "Atkinson Hyperlegible", body: "Inter" },
+      { id: "archivo-manrope", label: "Énergique direct", title: "Archivo Black", body: "Manrope" },
+      { id: "dm-inter", label: "Minimal sobre", title: "DM Sans", body: "Inter" },
+      { id: "cormorant-work", label: "Artisanal sensible", title: "Cormorant Garamond", body: "Work Sans" },
+      { id: "merriweather-public", label: "Institutionnel clair", title: "Merriweather", body: "Public Sans" }
+    ];
+
+    const referenceImages = {
+      paperTexture: `data:image/svg+xml,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 240">
+          <defs>
+            <filter id="grain">
+              <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="4" seed="12"/>
+              <feColorMatrix type="saturate" values="0"/>
+              <feComponentTransfer>
+                <feFuncA type="table" tableValues="0 .2"/>
+              </feComponentTransfer>
+            </filter>
+          </defs>
+          <rect width="720" height="240" fill="#efe3cf"/>
+          <rect x="38" y="30" width="644" height="180" rx="8" fill="#f8f0df"/>
+          <path d="M58 52c70-18 126 12 188-2 74-17 118-22 202-2 61 15 127-5 205 8" fill="none" stroke="#d1b890" stroke-width="4" opacity=".45"/>
+          <path d="M76 176c92-26 164 22 250 3 74-16 135-18 251 10" fill="none" stroke="#b7835d" stroke-width="3" opacity=".3"/>
+          <g fill="#8a6d4e" opacity=".45">
+            <circle cx="128" cy="82" r="4"/><circle cx="222" cy="153" r="3"/><circle cx="384" cy="67" r="3"/><circle cx="563" cy="142" r="4"/>
+          </g>
+          <g stroke="#9d8362" stroke-width="2" opacity=".25">
+            <path d="M142 130l58-16"/><path d="M302 89l92 22"/><path d="M481 188l82-30"/>
+          </g>
+          <rect width="720" height="240" filter="url(#grain)" opacity=".9"/>
+        </svg>
+      `)}`,
+      geometricPattern: `data:image/svg+xml,${encodeURIComponent(`
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 240">
+          <rect width="720" height="240" fill="#f4f0e8"/>
+          <g opacity=".95">
+            <circle cx="125" cy="104" r="48" fill="#6f8f80"/>
+            <rect x="205" y="68" width="92" height="92" rx="10" fill="#3c332a"/>
+            <path d="M407 56l68 118H339z" fill="#b06443"/>
+            <circle cx="575" cy="120" r="62" fill="#d9c7a7"/>
+            <rect x="548" y="93" width="84" height="54" rx="27" fill="#6f8f80"/>
+          </g>
+          <g fill="none" stroke="#3c332a" stroke-width="5" opacity=".28">
+            <path d="M54 182h142M252 34v172M501 45l139 139"/>
+          </g>
+          <g fill="#3c332a" opacity=".4">
+            <circle cx="70" cy="60" r="7"/><circle cx="90" cy="60" r="7"/><circle cx="110" cy="60" r="7"/>
+            <circle cx="618" cy="55" r="7"/><circle cx="638" cy="55" r="7"/><circle cx="658" cy="55" r="7"/>
+          </g>
+        </svg>
+      `)}`
+    };
+
+    const imageStyles = [
+      {
+        id: "photo-lifestyle",
+        label: "Photo lifestyle lumineuse",
+        cue: "humain, accessible, rassurant",
+        rule: "Personne en situation, lumière naturelle, décor simple, cadrage avec respiration.",
+        avoid: "Stock photo trop posée, sourire forcé, décor générique sans lien avec l’activité.",
+        refs: [
+          "/assets/reference-images/photo-lifestyle-lumineuse.png",
+          "https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=720&q=70",
+          "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=720&q=70"
+        ]
+      },
+      {
+        id: "photo-documentaire",
+        label: "Photo documentaire / coulisses",
+        cue: "vrai, concret, crédible",
+        rule: "Geste réel, environnement visible, peu de pose, détails du travail en cours.",
+        avoid: "Image trop parfaite, bureau témoin, scène qui semble rejouée pour la caméra.",
+        refs: [
+          "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=360&q=70",
+          "https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&w=360&q=70",
+          "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=360&q=70"
+        ]
+      },
+      {
+        id: "portrait-editorial",
+        label: "Portrait expert / éditorial",
+        cue: "incarné, expert, mémorable",
+        rule: "Portrait ou posture maîtrisée, cadrage fort, fond choisi, intention visible.",
+        avoid: "Portrait corporate froid, selfie, fond encombré, posture sans intention.",
+        refs: [
+          "/assets/reference-images/portrait-expert-editorial.png",
+          { url: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=360&q=70", position: "center 28%" },
+          { url: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=360&q=70", position: "center 26%" }
+        ]
+      },
+      {
+        id: "studio-objet",
+        label: "Objet / produit studio",
+        cue: "premium, net, maîtrisé",
+        rule: "Objet isolé ou petite scène, fond uni, lumière contrôlée, très peu de distractions.",
+        avoid: "Trop d’accessoires, ombres dures non maîtrisées, objet perdu dans la composition.",
+        refs: [
+          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=360&q=70",
+          "https://images.unsplash.com/photo-1503602642458-232111445657?auto=format&fit=crop&w=360&q=70",
+          "https://images.unsplash.com/photo-1513116476489-7635e79feb27?auto=format&fit=crop&w=360&q=70"
+        ]
+      },
+      {
+        id: "capture-preuve",
+        label: "Captures / preuves",
+        cue: "expert, concret, crédible",
+        rule: "Données, extraits, process, résultats ou avant/après bien lisibles.",
+        avoid: "Capture illisible, chiffres sans contexte, preuve décorative qu’on ne peut pas comprendre.",
+        refs: [
+          "/assets/reference-images/captures-preuves-dashboard.png",
+          "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=360&q=70",
+          "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=360&q=70"
+        ]
+      },
+      {
+        id: "illustration-ligne",
+        label: "Illustrations ligne",
+        cue: "simple, pédagogique, accessible",
+        rule: "Traits fins, formes explicatives, peu de détails décoratifs.",
+        avoid: "Trait trop fin pour être lisible, mélange d’icônes de styles différents, illustration gadget.",
+        refs: [
+          "/assets/reference-images/illustration-ligne.png",
+          "https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=720&q=70",
+          "https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=720&q=70"
+        ]
+      },
+      {
+        id: "illustration-flat",
+        label: "Illustration flat humaine",
+        cue: "simple, chaleureux, pédagogique",
+        rule: "Personnages ou scènes simplifiés, aplats de couleur, message lisible très vite.",
+        avoid: "Style startup générique, personnages sans rapport avec le message, trop de détails.",
+        refs: [
+          "/assets/reference-images/illustration-flat-humaine.png",
+          { url: "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/256/Person-Standing-Flat-Default-icon.png", size: "contain" },
+          { url: "https://icons.iconarchive.com/icons/microsoft/fluentui-emoji-flat/256/Person-Standing-Flat-Medium-Light-icon.png", size: "contain" }
+        ]
+      },
+      {
+        id: "collage-editorial",
+        label: "Collage éditorial expressif",
+        cue: "créatif, vivant, mémorable",
+        rule: "Photos découpées, formes, papiers, superpositions et angles assumés.",
+        avoid: "Collage gratuit, trop d’éléments, couleurs qui se battent avec la palette.",
+        refs: [
+          "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?auto=format&fit=crop&w=360&q=70",
+          "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=360&q=70",
+          "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&w=360&q=70"
+        ]
+      },
+      {
+        id: "textures-matieres",
+        label: "Textures / matières",
+        cue: "artisanal, sensible, authentique",
+        rule: "Papier, grain, matière, traces et détails imparfaits.",
+        avoid: "Texture lourde partout, effet vintage plaqué, matière qui gêne la lecture.",
+        refs: [
+          "/assets/reference-images/textures-matieres-papier.png",
+          "https://images.unsplash.com/photo-1534945773099-3dd1b21b3b8f?auto=format&fit=crop&w=720&q=70",
+          "https://images.unsplash.com/photo-1523475472560-d2df97ec485c?auto=format&fit=crop&w=720&q=70"
+        ]
+      },
+      {
+        id: "formes-graphiques",
+        label: "Formes graphiques / patterns",
+        cue: "minimal, moderne, net",
+        rule: "Système de formes simples, motifs répétables, utile quand on n’a pas encore de photos.",
+        avoid: "Décoration sans règle, formes différentes à chaque support, effet trop froid si la marque doit être humaine.",
+        refs: [
+          "/assets/reference-images/formes-graphiques-pattern.png",
+          "https://images.unsplash.com/photo-1574182245530-967d9b3831af?auto=format&fit=crop&w=720&q=70",
+          "https://images.unsplash.com/photo-1579541671172-43429ce17aca?auto=format&fit=crop&w=720&q=70"
+        ]
+      }
+    ];
+
+    const noVisualStyle = {
+      id: "none",
+      label: "Aucune illustration",
+      cue: "seulement des images",
+      rule: "Ne pas afficher le rendu CSS dans les supports."
+    };
+
+    const noImageStyle = {
+      id: "none",
+      label: "Aucune image",
+      cue: "seulement l’illustration CSS",
+      rule: "Ne pas afficher d’images de référence dans les supports.",
+      avoid: "",
+      refs: []
+    };
+
+    const visualStyles = [
+      noVisualStyle,
+      ...imageStyles.map((style) => ({
+        id: style.id,
+        label: style.label,
+        cue: style.cue,
+        rule: style.rule
+      }))
+    ];
+
+    const state = {
+      preset: "rassurant",
+      view: "site",
+      adjustTab: "colors",
+      fontPair: "lora-nunito",
+      palette: "sage",
+      visualStyle: "photo-lifestyle",
+      imageStyle: "photo-lifestyle"
+    };
+
+    const fields = {
+      brandName: document.querySelector("#brandName"),
+      perceptionWords: document.querySelector("#perceptionWords"),
+      headline: document.querySelector("#headline"),
+      bodyText: document.querySelector("#bodyText"),
+      ctaText: document.querySelector("#ctaText"),
+      brandBg: document.querySelector("#brandBg"),
+      brandSurface: document.querySelector("#brandSurface"),
+      brandInk: document.querySelector("#brandInk"),
+      brandMuted: document.querySelector("#brandMuted"),
+      brandAccent: document.querySelector("#brandAccent")
+    };
+
+    const root = document.documentElement;
+    const presetGrid = document.querySelector("#presetGrid");
+    const paletteGrid = document.querySelector("#paletteGrid");
+    const fontList = document.querySelector("#fontList");
+    const visualStyleList = document.querySelector("#visualStyleList");
+    const imageStyleList = document.querySelector("#imageStyleList");
+    const baseSummary = document.querySelector("#baseSummary");
+    const resetPresetButton = document.querySelector("#resetPreset");
+    const toast = document.querySelector("#toast");
+
+    function renderPresetButtons() {
+      presetGrid.innerHTML = "";
+      presets.forEach((preset) => {
+        const pair = fontPairs.find((item) => item.id === preset.fontPair) || fontPairs[0];
+        const imageStyle = imageStyles.find((style) => style.id === preset.imageStyle) || imageStyles[0];
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "preset";
+        button.dataset.preset = preset.id;
+        button.style.setProperty("--preset-title", `"${pair.title}"`);
+        button.setAttribute("aria-pressed", String(preset.id === state.preset));
+        button.innerHTML = `
+          <strong>${preset.label}</strong>
+          <span class="preset-words">${preset.words}</span>
+          <span class="preset-signals">
+            <span class="preset-samples">
+              <span class="swatches" aria-hidden="true">
+                ${preset.colors.map((color) => `<span style="background:${color}"></span>`).join("")}
+              </span>
+              <span class="preset-aa" aria-hidden="true">Aa</span>
+            </span>
+            <span class="preset-visual" style="${referenceStyle(imageStyle.refs[0], 8)}" aria-hidden="true"></span>
+          </span>
+        `;
+        button.addEventListener("click", () => applyPreset(preset.id));
+        presetGrid.appendChild(button);
+      });
+    }
+
+    function renderPaletteButtons() {
+      paletteGrid.innerHTML = "";
+      colorPalettes.forEach((palette) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "palette";
+        button.dataset.palette = palette.id;
+        button.setAttribute("aria-pressed", String(palette.id === state.palette));
+        button.innerHTML = `
+          <strong>${palette.label}</strong>
+          <span class="swatches" aria-hidden="true">
+            ${palette.colors.map((color) => `<span style="background:${color}"></span>`).join("")}
+          </span>
+        `;
+        button.addEventListener("click", () => applyPalette(palette.id));
+        paletteGrid.appendChild(button);
+      });
+    }
+
+    function renderFontButtons() {
+      fontList.innerHTML = "";
+      fontPairs.forEach((pair) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "font-option";
+        button.dataset.fontPair = pair.id;
+        button.style.setProperty("--sample-title", `"${pair.title}"`);
+        button.style.setProperty("--sample-body", `"${pair.body}"`);
+        button.setAttribute("aria-pressed", String(pair.id === state.fontPair));
+        button.innerHTML = `
+          <span class="font-sample">
+            <b>Aa ${pair.label}</b>
+            <span>Un texte court pour voir la lecture.</span>
+          </span>
+          <span class="font-tag">${pair.title}<br>${pair.body}</span>
+        `;
+        button.addEventListener("click", () => {
+          state.fontPair = pair.id;
+          update();
+        });
+        fontList.appendChild(button);
+      });
+    }
+
+    function imageOptionMarkup(style, prefix, mode = "css") {
+      const thumbClass = style.id === "none" ? "image-thumb-none" : `image-thumb-${style.id}`;
+      const referenceImage = mode === "reference" && style.refs && style.refs[0]
+        ? `<span class="image-thumb image-thumb-reference" style="${referenceStyle(style.refs[0], 10)}" aria-hidden="true"></span>`
+        : `<span class="image-thumb ${thumbClass}" aria-hidden="true"></span>`;
+      return `
+        <span class="image-copy">
+          <strong>${style.label}</strong>
+          <span>${style.cue}</span>
+          <span class="image-rule">${prefix} ${style.rule}</span>
+        </span>
+        ${referenceImage}
+      `;
+    }
+
+    function renderVisualStyleButtons() {
+      visualStyleList.innerHTML = "";
+      visualStyles.forEach((style) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "image-option";
+        button.dataset.visualStyle = style.id;
+        button.setAttribute("aria-pressed", String(style.id === state.visualStyle));
+        button.innerHTML = imageOptionMarkup(style, "Rendu :");
+        button.addEventListener("click", () => {
+          state.visualStyle = style.id;
+          update();
+        });
+        visualStyleList.appendChild(button);
+      });
+    }
+
+    function renderImageStyleButtons() {
+      imageStyleList.innerHTML = "";
+      [noImageStyle, ...imageStyles].forEach((style) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "image-option";
+        button.dataset.imageStyle = style.id;
+        button.setAttribute("aria-pressed", String(style.id === state.imageStyle));
+        button.innerHTML = imageOptionMarkup(style, "À chercher :", "reference");
+        button.addEventListener("click", () => {
+          state.imageStyle = style.id;
+          update();
+        });
+        imageStyleList.appendChild(button);
+      });
+    }
+
+    function setColorFields(colors) {
+      [fields.brandBg.value, fields.brandSurface.value, fields.brandInk.value, fields.brandMuted.value, fields.brandAccent.value] = colors;
+    }
+
+    function currentColors() {
+      return [fields.brandBg.value, fields.brandSurface.value, fields.brandInk.value, fields.brandMuted.value, fields.brandAccent.value].map((color) => color.toLowerCase());
+    }
+
+    function syncPaletteSelection() {
+      const colors = currentColors().join();
+      const matchingPalette = colorPalettes.find((palette) => palette.colors.map((color) => color.toLowerCase()).join() === colors);
+      state.palette = matchingPalette ? matchingPalette.id : "";
+    }
+
+    function applyPreset(id) {
+      const preset = presets.find((item) => item.id === id);
+      if (!preset) return;
+      state.preset = id;
+      applyPresetBase(preset);
+      update();
+    }
+
+    function applyPresetBase(preset = getCurrentPreset()) {
+      state.fontPair = preset.fontPair;
+      state.visualStyle = preset.visualStyle || preset.imageStyle;
+      state.imageStyle = preset.imageStyle;
+      const linkedPalette = colorPalettes.find((palette) => palette.colors.join() === preset.colors.join());
+      state.palette = linkedPalette ? linkedPalette.id : "";
+      fields.perceptionWords.value = preset.words;
+      fields.headline.value = preset.headline;
+      fields.bodyText.value = preset.body;
+      setColorFields(preset.colors);
+    }
+
+    function resetCurrentPreset() {
+      applyPresetBase();
+      update();
+      showToast(`Base ${getCurrentPreset().label} réappliquée.`);
+    }
+
+    function applyPalette(id) {
+      const palette = colorPalettes.find((item) => item.id === id);
+      if (!palette) return;
+      state.palette = id;
+      setColorFields(palette.colors);
+      update();
+    }
+
+    function getCurrentFontPair() {
+      return fontPairs.find((pair) => pair.id === state.fontPair) || fontPairs[0];
+    }
+
+    function getCurrentPreset() {
+      return presets.find((preset) => preset.id === state.preset) || presets[0];
+    }
+
+    function isCurrentPresetModified() {
+      const preset = getCurrentPreset();
+      const presetColors = preset.colors.map((color) => color.toLowerCase()).join();
+      return (
+        currentColors().join() !== presetColors ||
+        state.fontPair !== preset.fontPair ||
+        state.visualStyle !== (preset.visualStyle || preset.imageStyle) ||
+        state.imageStyle !== preset.imageStyle ||
+        fields.perceptionWords.value.trim() !== preset.words ||
+        fields.headline.value.trim() !== preset.headline ||
+        fields.bodyText.value.trim() !== preset.body
+      );
+    }
+
+    function getCurrentImageStyle() {
+      if (state.imageStyle === "none") return noImageStyle;
+      return imageStyles.find((style) => style.id === state.imageStyle) || imageStyles[0];
+    }
+
+    function getCurrentVisualStyle() {
+      if (state.visualStyle === "none") return noVisualStyle;
+      return visualStyles.find((style) => style.id === state.visualStyle) || visualStyles[1];
+    }
+
+    function referenceUrl(ref) {
+      return typeof ref === "string" ? ref : ref.url;
+    }
+
+    function referencePosition(ref) {
+      return typeof ref === "string" ? "center" : (ref.position || "center");
+    }
+
+    function referenceSize(ref) {
+      return typeof ref === "string" ? "cover" : (ref.size || "cover");
+    }
+
+    function referenceStyle(ref, overlay = 12) {
+      return `background-image: linear-gradient(color-mix(in srgb, var(--brand-accent) ${overlay}%, transparent), color-mix(in srgb, var(--brand-accent) ${overlay}%, transparent)), url('${referenceUrl(ref)}'); background-position: ${referencePosition(ref)}; background-size: ${referenceSize(ref)}`;
+    }
+
+    function updateCssVars() {
+      const pair = getCurrentFontPair();
+      root.style.setProperty("--brand-bg", fields.brandBg.value);
+      root.style.setProperty("--brand-surface", fields.brandSurface.value);
+      root.style.setProperty("--brand-ink", fields.brandInk.value);
+      root.style.setProperty("--brand-muted", fields.brandMuted.value);
+      root.style.setProperty("--brand-accent", fields.brandAccent.value);
+      root.style.setProperty("--font-title", `"${pair.title}"`);
+      root.style.setProperty("--font-body", `"${pair.body}"`);
+      document.body.dataset.imageStyle = getCurrentVisualStyle().id;
+    }
+
+    function updateText() {
+      const brand = fields.brandName.value.trim() || "Votre marque";
+      const words = fields.perceptionWords.value.trim() || "perception visée";
+      const headline = fields.headline.value.trim() || "Votre phrase principale.";
+      const body = fields.bodyText.value.trim() || "Votre texte court pour tester la lisibilité.";
+      const cta = fields.ctaText.value.trim() || "Passer à l’action";
+      const direction = getCurrentPreset().label;
+
+      document.querySelector("#previewTitle").textContent = brand;
+      document.querySelectorAll("[data-bind='brand']").forEach((node) => node.textContent = brand);
+      document.querySelectorAll("[data-bind='words']").forEach((node) => node.textContent = words);
+      document.querySelectorAll("[data-bind='headline']").forEach((node) => node.textContent = headline);
+      document.querySelectorAll("[data-bind='body']").forEach((node) => node.textContent = body);
+      document.querySelectorAll("[data-bind='cta']").forEach((node) => node.textContent = cta);
+      document.querySelectorAll("[data-bind='direction']").forEach((node) => node.textContent = direction);
+      document.querySelector("#recapWords").textContent = words;
+    }
+
+    function updateRecap() {
+      const pair = getCurrentFontPair();
+      const preset = getCurrentPreset();
+      const imageStyle = getCurrentImageStyle();
+      const visualStyle = getCurrentVisualStyle();
+      const rulesHtml = preset.rules.map((rule) => `<li class="rule">${rule}</li>`).join("");
+      document.querySelector("#recapFonts").textContent = `${pair.title} + ${pair.body}`;
+      document.querySelector("#recapVisual").textContent = `${visualStyle.label} — ${visualStyle.cue}. ${visualStyle.rule}`;
+      document.querySelector("#recapImages").textContent = `${imageStyle.label} — ${imageStyle.cue}. ${imageStyle.rule}`;
+      document.querySelector("#referenceBoard").style.display = imageStyle.id === "none" ? "none" : "";
+      document.querySelector("#referenceGrid").innerHTML = imageStyle.refs.slice(0, 1).map((ref) => (
+        `<span class="reference-image" style="${referenceStyle(ref)}"></span>`
+      )).join("");
+      document.querySelector("#referenceNote").innerHTML = `<strong>À chercher :</strong> ${imageStyle.rule}`;
+      document.querySelector("#referenceAvoid").innerHTML = imageStyle.avoid ? `<strong>À éviter :</strong> ${imageStyle.avoid}` : "";
+      document.querySelector("#recapSwatches").innerHTML = [
+        fields.brandBg.value,
+        fields.brandSurface.value,
+        fields.brandInk.value,
+        fields.brandMuted.value,
+        fields.brandAccent.value
+      ].map((color) => `<span class="recap-swatch" style="background:${color}"></span>`).join("");
+      document.querySelector("#ruleList").innerHTML = rulesHtml;
+    }
+
+    function updateButtons() {
+      document.querySelectorAll(".preset").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.preset === state.preset));
+      });
+      document.querySelectorAll(".palette").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.palette === state.palette));
+      });
+      document.querySelectorAll(".font-option").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.fontPair === state.fontPair));
+      });
+      document.querySelectorAll("[data-visual-style]").forEach((button) => {
+        button.setAttribute("aria-pressed", String(button.dataset.visualStyle === state.visualStyle));
+      });
+      document.querySelectorAll(".image-option").forEach((button) => {
+        if (button.dataset.imageStyle) {
+          button.setAttribute("aria-pressed", String(button.dataset.imageStyle === state.imageStyle));
+        }
+      });
+      document.querySelectorAll(".tab").forEach((button) => {
+        button.setAttribute("aria-selected", String(button.dataset.view === state.view));
+      });
+      document.querySelectorAll(".adjust-tab").forEach((button) => {
+        button.setAttribute("aria-selected", String(button.dataset.adjustTab === state.adjustTab));
+      });
+    }
+
+    function updateView() {
+      document.querySelectorAll(".preview").forEach((preview) => {
+        preview.classList.toggle("is-active", preview.dataset.preview === state.view);
+      });
+    }
+
+    function updateAdjustPanels() {
+      document.querySelectorAll("[data-adjust-panel]").forEach((panel) => {
+        const isActive = panel.dataset.adjustPanel === state.adjustTab;
+        panel.classList.toggle("is-active", isActive);
+        panel.hidden = !isActive;
+      });
+    }
+
+    function updateBaseStatus() {
+      const preset = getCurrentPreset();
+      const isModified = isCurrentPresetModified();
+      baseSummary.textContent = isModified
+        ? `Base ${preset.label} modifiée`
+        : `Base ${preset.label} appliquée`;
+      resetPresetButton.textContent = `Revenir à la base ${preset.label}`;
+      resetPresetButton.disabled = !isModified;
+    }
+
+    function updatePreviewReferences() {
+      const imageStyle = getCurrentImageStyle();
+      const html = imageStyle.refs.slice(0, 1).map((ref) => (
+        `<span class="preview-reference-image" style="${referenceStyle(ref)}"></span>`
+      )).join("");
+      document.querySelectorAll(".preview-reference-board").forEach((board) => {
+        board.style.display = imageStyle.id === "none" ? "none" : "";
+      });
+      document.querySelectorAll("[data-preview-refs]").forEach((grid) => {
+        grid.innerHTML = html;
+      });
+    }
+
+    function updateUrl() {
+      const params = new URLSearchParams({
+        p: state.preset,
+        v: state.view,
+        fp: state.fontPair,
+        pal: state.palette,
+        css: state.visualStyle,
+        img: state.imageStyle,
+        b: fields.brandName.value,
+        w: fields.perceptionWords.value,
+        h: fields.headline.value,
+        t: fields.bodyText.value,
+        cta: fields.ctaText.value,
+        bg: fields.brandBg.value.slice(1),
+        surface: fields.brandSurface.value.slice(1),
+        ink: fields.brandInk.value.slice(1),
+        muted: fields.brandMuted.value.slice(1),
+        accent: fields.brandAccent.value.slice(1)
+      });
+      window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
+    }
+
+    function update() {
+      syncPaletteSelection();
+      updateCssVars();
+      updateText();
+      updateRecap();
+      updatePreviewReferences();
+      updateButtons();
+      updateView();
+      updateAdjustPanels();
+      updateBaseStatus();
+      updateUrl();
+    }
+
+    function restoreFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.size) return;
+      const presetParam = params.get("p");
+      if (presetParam && presets.some((preset) => preset.id === presetParam)) {
+        state.preset = presetParam;
+        applyPresetBase(getCurrentPreset());
+      }
+      state.view = params.get("v") || state.view;
+      state.fontPair = params.get("fp") || state.fontPair;
+      state.palette = params.get("pal") || state.palette;
+      const cssParam = params.get("css");
+      const imageParam = params.get("img");
+      state.visualStyle = cssParam || imageParam || state.visualStyle;
+      state.imageStyle = imageParam || state.imageStyle;
+      if (state.preset === "expert" && imageParam === "capture-preuve" && (!cssParam || cssParam === "capture-preuve")) {
+        state.imageStyle = getCurrentPreset().imageStyle;
+      }
+      if (!["site", "post", "offer"].includes(state.view)) {
+        state.view = "site";
+      }
+      if (!visualStyles.some((style) => style.id === state.visualStyle)) {
+        const preset = getCurrentPreset();
+        state.visualStyle = preset.visualStyle || preset.imageStyle || visualStyles[1].id;
+      }
+      if (state.imageStyle !== "none" && !imageStyles.some((style) => style.id === state.imageStyle)) {
+        state.imageStyle = getCurrentPreset().imageStyle || imageStyles[0].id;
+      }
+      fields.brandName.value = (params.get("b") || fields.brandName.value).slice(0, 80);
+      fields.perceptionWords.value = (params.get("w") || fields.perceptionWords.value).slice(0, 120);
+      fields.headline.value = (params.get("h") || fields.headline.value).slice(0, 160);
+      fields.bodyText.value = (params.get("t") || fields.bodyText.value).slice(0, 400);
+      fields.ctaText.value = (params.get("cta") || fields.ctaText.value).slice(0, 80);
+      ["bg", "surface", "ink", "muted", "accent"].forEach((key, index) => {
+        const value = params.get(key);
+        if (/^[0-9a-f]{6}$/i.test(value || "")) {
+          [fields.brandBg, fields.brandSurface, fields.brandInk, fields.brandMuted, fields.brandAccent][index].value = `#${value}`;
+        }
+      });
+    }
+
+    function miniCharteText() {
+      const pair = getCurrentFontPair();
+      const preset = getCurrentPreset();
+      const imageStyle = getCurrentImageStyle();
+      const visualStyle = getCurrentVisualStyle();
+      return [
+        `Nom : ${fields.brandName.value}`,
+        `Perception : ${fields.perceptionWords.value}`,
+        `Direction : ${preset.label}`,
+        `Couleurs : fond ${fields.brandBg.value}, surface ${fields.brandSurface.value}, texte ${fields.brandInk.value}, secondaire ${fields.brandMuted.value}, accent ${fields.brandAccent.value}`,
+        `Typographies : ${pair.title} pour les titres + ${pair.body} pour les textes`,
+        `Illustration CSS : ${visualStyle.label} (${visualStyle.cue})`,
+        `Images : ${imageStyle.label} (${imageStyle.cue})`,
+        `Règle image : ${imageStyle.rule}`,
+        imageStyle.avoid ? `À éviter côté images : ${imageStyle.avoid}` : "",
+        "Règles :",
+        ...preset.rules.map((rule) => `- ${rule}`)
+      ].filter(Boolean).join("\n");
+    }
+
+    async function copyText(text, message) {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(message);
+      } catch {
+        showToast("Copie impossible dans ce navigateur.");
+      }
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("is-visible");
+      window.setTimeout(() => toast.classList.remove("is-visible"), 2200);
+    }
+
+    Object.values(fields).forEach((field) => {
+      field.addEventListener("input", update);
+    });
+
+    document.querySelectorAll(".tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.view = button.dataset.view;
+        update();
+      });
+    });
+
+    document.querySelectorAll(".adjust-tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.adjustTab = button.dataset.adjustTab;
+        update();
+      });
+    });
+
+    resetPresetButton.addEventListener("click", resetCurrentPreset);
+
+    document.querySelector("#copySummary").addEventListener("click", () => copyText(miniCharteText(), "Mini-charte copiée."));
+    document.querySelector("#copyLink").addEventListener("click", () => {
+      const url = new URL(window.location.href);
+      url.searchParams.delete("mode");
+      url.searchParams.set("src", "share");
+      copyText(url.toString(), "Lien de partage copié.");
+    });
+
+    renderPresetButtons();
+    renderPaletteButtons();
+    renderFontButtons();
+    renderVisualStyleButtons();
+    renderImageStyleButtons();
+    restoreFromUrl();
+    update();
+  </script>
+  <script defer src="/assets/tool-beta.js"></script>
+</body>
+</html>

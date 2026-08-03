@@ -1,0 +1,13 @@
+node_modules
+test-results
+playwright-report
+tests
+.git
+.vercel
+.env*
+playwright.config.cjs
+.agents
+docs/editorial
+SEO_CONTENT_FOUNDATION.md
+SEO_EDITORIAL_WORKFLOW.md
+README.md

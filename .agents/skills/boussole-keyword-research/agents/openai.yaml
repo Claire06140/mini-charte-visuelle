@@ -1,0 +1,4 @@
+interface:
+  display_name: "Boussole — Recherche SEO"
+  short_description: "Cartographier les opportunités SEO par marché"
+  default_prompt: "Utilise $boussole-keyword-research pour rechercher, évaluer et cartographier les prochaines opportunités SEO de Boussole visuelle."

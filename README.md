@@ -10,6 +10,8 @@ Bêta publique et gratuite pour transformer un positionnement en direction visue
 - `confidentialite.html` : information sur la mesure d’audience.
 - `fr/guides/creer-identite-visuelle-entrepreneur/` : premier guide intégré en
   relecture publique, avec `noindex` et hors sitemap.
+- `fr/guides/moodboard-charte-graphique/` : deuxième guide intégré en relecture
+  publique avec les mêmes garde-fous.
 - `assets/guides.css` : styles partagés des futurs guides.
 - `SEO_CONTENT_FOUNDATION.md` : stratégie éditoriale, briefs des huit articles et maillage interne.
 - `SEO_EDITORIAL_WORKFLOW.md` : recherche de mots-clés, production des articles, skills prévus et préparation multilingue.
@@ -18,7 +20,9 @@ Bêta publique et gratuite pour transformer un positionnement en direction visue
 - `docs/editorial/TONE_GUIDE.md` : voix éditoriale V0 de Boussole visuelle.
 - `docs/editorial/ARTICLE_TEMPLATE.md` : modèle réutilisable du brief à la validation.
 - `docs/editorial/BLOG_PROGRESS.md` : état de la phase éditoriale, décisions actées et ordre de reprise pour les autres agents.
-- `docs/editorial/briefs/` : briefs et plans détaillés à valider avant rédaction ; l'article 4 y est préparé.
+- `docs/editorial/briefs/` : briefs et plans détaillés à valider avant rédaction.
+- `docs/editorial/drafts/` : sources Markdown des brouillons conservées hors du
+  build public.
 - `.agents/skills/boussole-keyword-research/` : skill projet pour rechercher, scorer et maintenir la cartographie SEO.
 - `.agents/skills/boussole-blog-post/` : skill projet pour préparer, rédiger et contrôler les guides.
 - `vercel.json` : build public en liste blanche et Ignored Build Step versionné.

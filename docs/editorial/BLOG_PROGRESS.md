@@ -1,6 +1,6 @@
 # Suivi éditorial et relais entre agents — Boussole visuelle
 
-Dernière mise à jour : 3 août 2026.
+Dernière mise à jour : 5 août 2026.
 
 ## Objet
 
@@ -19,9 +19,10 @@ Tout agent intervenant sur les guides doit lire, dans cet ordre :
 
 ## État de la phase éditoriale
 
-**Phase actuelle :** le premier brouillon de l'article 4 est rédigé et intégré
-sur une URL publique non indexée pour relecture par Claire. Aucun guide n'est
-encore prêt à être indexé.
+**Phase actuelle :** les brouillons des articles 4 et 8 sont intégrés sur leurs
+URL de relecture avec `noindex`. Claire peut maintenant comparer les deux
+articles avant d'ajuster le processus éditorial. Aucun guide n'est encore prêt
+à être indexé.
 
 | Élément | État | Prochaine action |
 |---|---|---|
@@ -30,10 +31,11 @@ encore prêt à être indexé.
 | Skill de recherche de mots-clés | Créé et validé | Le réutiliser pour Semrush, SERP et Search Console. |
 | Règles de contenu | Créées | Les appliquer dès le brief, pas seulement à la relecture. |
 | Voix et ton de Claire | Validés sur le plan | Tutoiement direct mais adulte retenu ; le contrôler à nouveau sur le premier brouillon. |
-| Modèle d'article | Créé | L'utiliser pour le brief de l'article 4. |
+| Modèle d'article | Créé | L'utiliser pour chaque brief et conserver les écarts utiles observés à la relecture. |
 | Skill de rédaction | Créé et validé | L'invoquer avec `$boussole-blog-post` pour chaque nouveau guide. |
-| Architecture `/fr/guides/` | À implémenter | Créer index, modèle de page, métadonnées et sitemap avant publication. |
+| Architecture `/fr/guides/` | Partiellement implémentée | Deux routes existent ; créer l'index, finaliser les canonical et préparer le sitemap avant indexation. |
 | Premier article | Brouillon intégré, statut `review` | Claire relit la page publique non indexée ; intégrer ses retours avant le statut `ready`. |
+| Deuxième article | Brouillon intégré, statut `review` | Claire relit la page et compare ses forces et faiblesses avec l'article 4. |
 
 ## Automation quotidienne Semrush
 
@@ -52,12 +54,13 @@ encore prêt à être indexé.
   pour plan détaillé » lorsque la demande mesurée, l'intention et le lien
   produit sont documentés. Le plan, la rédaction et la publication restent des
   tâches séparées.
-- **Dernière exécution :** le 3 août 2026, les trois formulations exactes de
-  l'article 4 ont été vérifiées sur la base France, ordinateur. Semrush n'a
-  fourni aucun volume ni difficulté exploitable : deux pages indiquent que rien
-  n'a été trouvé et `identité visuelle entrepreneur` affiche `n/a`. La mise à
-  jour des métriques ouvre une proposition de forfait Pro ; aucun essai n'a été
-  lancé. Le prochain lot commence par les requêtes prioritaires de l'article 5.
+- **Dernière exécution :** le 5 août 2026, huit requêtes prioritaires ont été
+  vérifiées sur la base France, ordinateur. `brief identité visuelle` affiche
+  20 recherches mensuelles et une difficulté `n/a`, ce qui renforce le parcours
+  pré-brief de l'article 8 sans créer de page. La variante `générateur de charte
+  graphique gratuit` affiche aussi 20, mais reste hors promesse et en `hold`.
+  Les autres formulations renvoient `n/a` ou aucune donnée. Aucun essai ni
+  aucune actualisation payante n'a été lancé ; l'ordre éditorial ne change pas.
 
 Si Semrush demande une authentification, l'automation doit s'arrêter et le
 signaler au lieu d'utiliser une autre source pour inventer des métriques.
@@ -96,7 +99,7 @@ Cet ordre n'est pas un calendrier de publication automatique. Les deux premiers
 articles sont les seuls considérés comme prêts à entrer dans la phase de
 préparation détaillée.
 
-## Article 4 — prochain article à produire
+## Article 4 — premier article en relecture
 
 - **Brief et plan :**
   [`briefs/article-4-creer-identite-visuelle-entrepreneur.md`](briefs/article-4-creer-identite-visuelle-entrepreneur.md),
@@ -124,6 +127,14 @@ préparation détaillée.
 
 ## Article 8 — décision consolidée
 
+- **Brief et plan :**
+  [`briefs/article-8-moodboard-charte-graphique.md`](briefs/article-8-moodboard-charte-graphique.md),
+  statut `review`, validé puis intégré.
+- **Brouillon source :**
+  [`drafts/article-8-moodboard-charte-graphique.md`](drafts/article-8-moodboard-charte-graphique.md).
+- **URL de relecture :** `/fr/guides/moodboard-charte-graphique/`, avec
+  `noindex, follow` et hors sitemap.
+
 - **Titre retenu :** « Comment créer un moodboard de marque et le transformer
   en charte graphique ? »
 - **Slug prévu :** `/fr/guides/moodboard-charte-graphique`.
@@ -142,15 +153,25 @@ préparation détaillée.
 - **Limite de promesse :** expliquer le passage par une décision de direction,
   des tests et des règles. Ne pas laisser entendre qu'une collection d'images
   devient automatiquement une charte complète.
+- **Angle proposé :** passer de l'inspiration à des décisions testables, avec
+  une table explicite entre références, intention et règles d'application.
+- **Exemple proposé :** Place Nette, activité fictive d'organisation de la
+  maison, comparant une direction Rassurante et une direction Premium sur le
+  même contenu.
+- **CTA proposé :** « Créer ma direction visuelle », vers le diagnostic avec
+  l'origine analytics fermée `guide`.
 
-## Étapes restantes avant le premier brouillon
+## Étapes éditoriales immédiates
 
 1. Faire relire par Claire le brouillon intégré à l'URL
    `/fr/guides/creer-identite-visuelle-entrepreneur/`.
 2. Intégrer ses retours sur le fond, le ton, l'exemple et le CTA sans retirer
    `noindex` pendant la phase de relecture.
-3. Valider la biographie, le domaine et la canonical avant de décider du statut
-   `ready` et d'une éventuelle indexation.
+3. Relire l'article 8 sur `/fr/guides/moodboard-charte-graphique/`, puis relever
+   les enseignements communs et les différences avec l'article 4 avant de
+   modifier les règles ou le skill.
+4. Valider la biographie, le domaine et les canonical avant de décider du
+   statut `ready` et d'une éventuelle indexation.
 
 ## Étapes entre brouillon et publication
 
@@ -218,3 +239,25 @@ Un guide est prêt lorsque :
   relecture. Le CTA mène au diagnostic avec l'origine analytics fermée `guide`.
   QA locale desktop/mobile et relecture humaine par Claire requises avant tout
   passage à `ready` ou indexation.
+- 2026-08-04 — Automation Semrush : huit requêtes supplémentaires vérifiées sur
+  France/ordinateur. La formulation mesurée `différence entre identité visuelle
+  et charte graphique` (20, KD `n/a`) devient l'expression principale de la
+  famille article 1, sans nouvelle page ni changement d'ordre. Les autres
+  formulations affichent `n/a` ou aucune donnée ; aucune métrique n'a été
+  inventée et aucun essai payant n'a été lancé.
+- 2026-08-05 — Automation Semrush : huit requêtes prioritaires vérifiées sur
+  France/ordinateur. `brief identité visuelle` (20, KD `n/a`) confirme une
+  section pré-brief dans l'article 8. La variante `générateur de charte
+  graphique gratuit` (20, KD `n/a`) reste en attente car elle dépasse la
+  promesse de Boussole visuelle. Aucun titre, regroupement ni ordre de
+  production ne change ; aucun essai payant n'a été lancé.
+- 2026-08-05 — Brief et plan détaillé de l'article 8 créés avec
+  `$boussole-blog-post`. L'angle relie les références aux décisions testables,
+  avec l'exemple fictif Place Nette, un pré-brief complet et le CTA proposé
+  « Créer ma direction visuelle ». Statut `outline` en attente de validation
+  par Claire ; aucun brouillon rédigé ni publié.
+- 2026-08-05 — Claire a validé les cinq décisions de l'article 8. Le brouillon
+  source a été rédigé puis intégré à `/fr/guides/moodboard-charte-graphique/`
+  avec `noindex, follow`, hors sitemap et avec le CTA « Créer ma direction
+  visuelle ». Statut `review` ; la prochaine étape est une comparaison humaine
+  des deux premiers articles avant d'ajuster le processus de rédaction.

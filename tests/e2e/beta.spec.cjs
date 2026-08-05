@@ -13,6 +13,25 @@ test("le premier guide reste non indexé et ouvre le diagnostic", async ({ page 
   await expect(page.getByRole("heading", { name: "Quel cap pour votre image ?" })).toBeVisible();
 });
 
+test("le guide moodboard reste non indexé et ouvre sa prochaine étape", async ({ page }) => {
+  await page.goto("/fr/guides/moodboard-charte-graphique/");
+  await expect(page).toHaveTitle("Créer un moodboard de marque et en faire une charte graphique");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, follow");
+  await expect(page.getByRole("heading", { name: "Comment créer un moodboard de marque et le transformer en charte graphique ?" })).toBeVisible();
+  await expect(page.getByText("Place Nette", { exact: true }).first()).toBeVisible();
+  await page.getByRole("link", { name: "Créer ma direction visuelle" }).click();
+  await expect(page.getByRole("heading", { name: "Quel cap pour votre image ?" })).toBeVisible();
+});
+
+test("le guide moodboard reste lisible à 390 px sans débordement de page", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/fr/guides/moodboard-charte-graphique/");
+  await expect(page.getByRole("heading", { name: "Comment créer un moodboard de marque et le transformer en charte graphique ?" })).toBeVisible();
+  await expect(page.locator(".direction-card")).toHaveCount(2);
+  await expect(page.locator(".table-scroll")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+});
+
 test("la landing ouvre le diagnostic et le parcours renvoie deux pistes", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Donnez une direction claire à votre image." })).toBeVisible();

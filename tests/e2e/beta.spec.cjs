@@ -10,7 +10,7 @@ test("le premier guide reste non indexé et ouvre le diagnostic", async ({ page 
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, follow");
   await expect(page.getByRole("heading", { name: "Créer son identité visuelle quand on est entrepreneur : par où commencer avant Canva ?" })).toBeVisible();
   await page.getByRole("link", { name: "Trouver mon identité visuelle" }).click();
-  await expect(page.getByRole("heading", { name: "Quel cap pour votre image ?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Quel cap pour ton image ?" })).toBeVisible();
 });
 
 test("le guide moodboard reste non indexé et ouvre sa prochaine étape", async ({ page }) => {
@@ -20,7 +20,7 @@ test("le guide moodboard reste non indexé et ouvre sa prochaine étape", async 
   await expect(page.getByRole("heading", { name: "Comment créer un moodboard de marque et le transformer en charte graphique ?" })).toBeVisible();
   await expect(page.getByText("Place Nette", { exact: true }).first()).toBeVisible();
   await page.getByRole("link", { name: "Créer ma direction visuelle" }).click();
-  await expect(page.getByRole("heading", { name: "Quel cap pour votre image ?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Quel cap pour ton image ?" })).toBeVisible();
 });
 
 test("le guide moodboard reste lisible à 390 px sans débordement de page", async ({ page }) => {
@@ -34,10 +34,10 @@ test("le guide moodboard reste lisible à 390 px sans débordement de page", asy
 
 test("la landing ouvre le diagnostic et le parcours renvoie deux pistes", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { name: "Donnez une direction claire à votre image." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Donne une direction claire à ton image." })).toBeVisible();
   await page.getByRole("link", { name: "Trouver deux directions" }).click();
   await expect(page).toHaveURL(/\/outil\//);
-  await expect(page.getByRole("heading", { name: "Quel cap pour votre image ?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Quel cap pour ton image ?" })).toBeVisible();
 
   await page.locator('input[name="perception"][value="premium"]').check();
   await page.getByRole("button", { name: "Continuer" }).click();
@@ -48,13 +48,13 @@ test("la landing ouvre le diagnostic et le parcours renvoie deux pistes", async 
   await page.locator('input[name="avoid"][value="loud"]').check();
   await page.getByRole("button", { name: "Voir mes deux pistes" }).click();
 
-  await expect(page.getByRole("heading", { name: "Vos deux directions de départ" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Tes deux directions de départ" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Premium" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Expert" })).toBeVisible();
   await page.getByRole("button", { name: "Fermer et comparer plus tard" }).click();
   await expect(page.getByRole("button", { name: "Comparer A/B" })).toBeEnabled();
   await page.getByRole("button", { name: "Comparer A/B" }).click();
-  await expect(page.getByRole("heading", { name: "Quelle piste porte mieux votre message ?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Quelle piste porte mieux ton message ?" })).toBeVisible();
 });
 
 test("un ancien lien racine est redirigé et restauré", async ({ page }) => {
@@ -82,8 +82,8 @@ test("l’impression produit le livrable sans ouvrir la boîte système", async 
 test("les questions facultatives sont fermables sur mobile", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/outil/?mode=free");
-  await expect(page.getByRole("heading", { name: "Quel support préparez-vous ?" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Quel support prépares-tu ?" })).toBeVisible();
   await page.getByRole("button", { name: "Ignorer" }).click();
-  await expect(page.getByRole("heading", { name: "Quel support préparez-vous ?" })).toBeHidden();
+  await expect(page.getByRole("heading", { name: "Quel support prépares-tu ?" })).toBeHidden();
   await expect(page.locator(".app")).toBeVisible();
 });

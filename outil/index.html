@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Outil — Boussole visuelle</title>
-  <meta name="description" content="Trouvez, comparez et partagez une direction visuelle claire pour votre projet.">
+  <meta name="description" content="Trouve, compare et partage une direction visuelle claire pour ton projet.">
   <meta name="posthog-token" content="phc_qJ7mUgbRXFHkSX7HMUzNRSob5SPctNGoqVYNBSsrA6Rv">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -2171,7 +2171,7 @@
 </head>
 <body data-image-style="photo-lifestyle">
   <div class="shared-banner" id="sharedBanner" hidden>
-    <div><strong>Direction partagée</strong><span>Vous pouvez l’explorer telle quelle ou créer votre propre version.</span></div>
+    <div><strong>Direction partagée</strong><span>Explore-la telle quelle ou crée ta propre version.</span></div>
     <button class="command" id="cloneShared" type="button">Dupliquer et modifier</button>
   </div>
   <div class="app">
@@ -2179,7 +2179,7 @@
       <div class="app-title">
         <div>
           <h1>Boussole visuelle</h1>
-          <p class="tiny">Passez d’une intention à une direction visible.</p>
+          <p class="tiny">Passe d’une intention à une direction visible.</p>
         </div>
       </div>
 
@@ -2188,7 +2188,7 @@
           <span class="step-badge" aria-hidden="true">1</span>
           <h2 class="section-title">Base cohérente</h2>
         </div>
-        <p class="section-help">Commencez par une composition complète : intention, couleurs, typographies, visuels et règles de départ.</p>
+        <p class="section-help">Commence par une composition complète : intention, couleurs, typographies, visuels et règles de départ.</p>
         <div class="preset-grid" id="presetGrid"></div>
         <div class="base-actions">
           <p class="base-summary" id="baseSummary">Base actuelle : Rassurant</p>
@@ -2201,7 +2201,7 @@
           <span class="step-badge" aria-hidden="true">2</span>
           <h2 class="section-title">Ajuster finement</h2>
         </div>
-        <p class="section-help">Modifiez un seul type de choix à la fois pour tester sans perdre la cohérence de départ.</p>
+        <p class="section-help">Modifie un seul type de choix à la fois pour tester sans perdre la cohérence de départ.</p>
 
         <div class="adjust-tabs" role="tablist" aria-label="Types de réglages">
           <button class="adjust-tab" type="button" role="tab" aria-selected="true" aria-controls="panel-colors" data-adjust-tab="colors">Couleurs</button>
@@ -2212,7 +2212,7 @@
 
         <div class="adjust-panel is-active" id="panel-colors" role="tabpanel" data-adjust-panel="colors">
           <h3 class="section-title">Couleurs</h3>
-          <p class="section-help">Changez la palette entière, ou ajustez une couleur si vous savez ce que vous testez.</p>
+          <p class="section-help">Change la palette entière, ou ajuste une couleur si tu sais ce que tu testes.</p>
           <div class="palette-grid" id="paletteGrid"></div>
           <div class="color-grid">
             <div class="color-field">
@@ -2247,19 +2247,19 @@
         <div class="adjust-panel" id="panel-visuals" role="tabpanel" data-adjust-panel="visuals" hidden>
           <div class="adjust-group">
             <h3 class="section-title">Images de référence</h3>
-            <p class="section-help">Choisissez le type d’image qui aide à vous projeter : photo, portrait, preuve, illustration ou matière.</p>
+            <p class="section-help">Choisis le type d’image qui t’aide à te projeter : photo, portrait, preuve, illustration ou matière.</p>
             <div class="image-style-list" id="imageStyleList"></div>
           </div>
           <div class="adjust-group">
             <h3 class="section-title">Illustration générée</h3>
-            <p class="section-help">Ajoutez un rendu graphique qui réagit aux couleurs, ou choisissez aucune illustration si l’image suffit.</p>
+            <p class="section-help">Ajoute un rendu graphique qui réagit aux couleurs, ou n’utilise aucune illustration si l’image suffit.</p>
             <div class="image-style-list" id="visualStyleList"></div>
           </div>
         </div>
 
         <div class="adjust-panel" id="panel-texts" role="tabpanel" data-adjust-panel="texts" hidden>
           <h3 class="section-title">Textes de test</h3>
-          <p class="section-help">Modifiez ces textes pour voir si la direction tient avec votre vrai message.</p>
+          <p class="section-help">Modifie ces textes pour voir si la direction tient avec ton vrai message.</p>
           <div class="field">
             <label for="brandName">Nom</label>
             <input id="brandName" type="text" value="Atelier Nova" maxlength="80">
@@ -2270,11 +2270,11 @@
           </div>
           <div class="field">
             <label for="headline">Phrase principale</label>
-            <textarea id="headline" maxlength="160">Clarifier votre image pour inspirer confiance.</textarea>
+            <textarea id="headline" maxlength="160">Une image claire inspire confiance.</textarea>
           </div>
           <div class="field">
             <label for="bodyText">Texte court</label>
-            <textarea id="bodyText" maxlength="400">Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.</textarea>
+            <textarea id="bodyText" maxlength="400">Une direction visuelle simple rend le positionnement lisible sur tous les supports.</textarea>
           </div>
           <div class="field">
             <label for="ctaText">Action</label>
@@ -2326,8 +2326,8 @@
             <div class="site-hero">
               <div>
                 <p class="eyebrow" data-bind="direction">Rassurant</p>
-                <h2 data-bind="headline">Clarifier votre image pour inspirer confiance.</h2>
-                <p data-bind="body">Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.</p>
+                <h2 data-bind="headline">Une image claire inspire confiance.</h2>
+                <p data-bind="body">Une direction visuelle simple rend le positionnement lisible sur tous les supports.</p>
                 <div class="cta-row">
                   <span class="cta" data-bind="cta">Découvrir l’offre</span>
                   <span class="quiet-link">Voir la méthode</span>
@@ -2353,8 +2353,8 @@
                 <div class="post-mark" aria-hidden="true"></div>
               </div>
               <div>
-                <h2 class="post-title" data-bind="headline">Clarifier votre image pour inspirer confiance.</h2>
-                <p data-bind="body">Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.</p>
+                <h2 class="post-title" data-bind="headline">Une image claire inspire confiance.</h2>
+                <p data-bind="body">Une direction visuelle simple rend le positionnement lisible sur tous les supports.</p>
                 <div class="visual-block is-compact post-visual" aria-hidden="true">
                   <div class="visual-top"></div>
                   <div class="visual-grid">
@@ -2381,8 +2381,8 @@
             <div class="offer-box">
               <div>
                 <p class="eyebrow" data-bind="brand">Atelier Nova</p>
-                <h2 data-bind="headline">Clarifier votre image pour inspirer confiance.</h2>
-                <p data-bind="body">Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.</p>
+                <h2 data-bind="headline">Une image claire inspire confiance.</h2>
+                <p data-bind="body">Une direction visuelle simple rend le positionnement lisible sur tous les supports.</p>
               </div>
               <div class="offer-side">
                 <div>
@@ -2460,8 +2460,8 @@
         colors: ["#f7f1e8", "#fffaf2", "#3c332a", "#756b60", "#6f8f80"],
         fontPair: "lora-nunito",
         imageStyle: "photo-lifestyle",
-        headline: "Clarifier votre image pour inspirer confiance.",
-        body: "Une direction visuelle simple pour rendre votre positionnement lisible sur vos supports.",
+        headline: "Une image claire inspire confiance.",
+        body: "Une direction visuelle simple rend le positionnement lisible sur tous les supports.",
         rules: [
           "Contrastes calmes, peu de couleurs fortes.",
           "Titres chaleureux, textes très lisibles.",
@@ -2522,7 +2522,7 @@
         fontPair: "atkinson-inter",
         imageStyle: "illustration-flat",
         headline: "Comprendre vite, avancer simplement.",
-        body: "Une image directe, lisible et accueillante pour réduire la distance avec votre audience.",
+        body: "Une image directe, lisible et accueillante réduit la distance avec le public.",
         rules: [
           "Contraste lisible et vocabulaire visuel simple.",
           "Boutons et informations très identifiables.",
@@ -3066,10 +3066,10 @@
     }
 
     function updateText() {
-      const brand = fields.brandName.value.trim() || "Votre marque";
+      const brand = fields.brandName.value.trim() || "Nom de la marque";
       const words = fields.perceptionWords.value.trim() || "perception visée";
-      const headline = fields.headline.value.trim() || "Votre phrase principale.";
-      const body = fields.bodyText.value.trim() || "Votre texte court pour tester la lisibilité.";
+      const headline = fields.headline.value.trim() || "Phrase principale.";
+      const body = fields.bodyText.value.trim() || "Texte court pour tester la lisibilité.";
       const cta = fields.ctaText.value.trim() || "Passer à l’action";
       const direction = getCurrentPreset().label;
 

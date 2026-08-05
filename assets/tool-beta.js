@@ -72,13 +72,13 @@
     const modal = document.querySelector("#diagnosticModal");
     const questions = [
       { name: "perception", legend: "Quelle impression doit dominer ?", className: "perceptions", options: [["rassurant","Rassurante"],["expert","Experte"],["creatif","Créative"],["premium","Premium"],["accessible","Accessible"],["energique","Énergique"],["minimal","Minimale"],["artisanal","Artisanale"]] },
-      { name: "relation", legend: "Quelle relation voulez-vous créer ?", options: [["reassure","Rassurer et accompagner"],["prove","Structurer et prouver"],["inspire","Inspirer et se différencier"],["elevate","Valoriser et élever"],["activate","Mobiliser et faire agir"]] },
-      { name: "energy", legend: "Quel niveau d’énergie vous ressemble ?", options: [["calm","Calme et posé"],["balanced","Équilibré et maîtrisé"],["dynamic","Dynamique et vivant"]] },
-      { name: "avoid", legend: "Quelle contre-image voulez-vous éviter ?", options: [["cold","Froide ou impersonnelle"],["generic","Générique ou interchangeable"],["amateur","Amateur ou bricolée"],["elitist","Élitiste ou distante"],["loud","Agressive ou bruyante"],["dated","Datée ou trop traditionnelle"]] }
+      { name: "relation", legend: "Quelle relation veux-tu créer ?", options: [["reassure","Rassurer et accompagner"],["prove","Structurer et prouver"],["inspire","Inspirer et se différencier"],["elevate","Valoriser et élever"],["activate","Mobiliser et faire agir"]] },
+      { name: "energy", legend: "Quel niveau d’énergie te ressemble ?", options: [["calm","Calme et posé"],["balanced","Équilibré et maîtrisé"],["dynamic","Dynamique et vivant"]] },
+      { name: "avoid", legend: "Quelle contre-image veux-tu éviter ?", options: [["cold","Froide ou impersonnelle"],["generic","Générique ou interchangeable"],["amateur","Amateur ou bricolée"],["elitist","Élitiste ou distante"],["loud","Agressive ou bruyante"],["dated","Datée ou trop traditionnelle"]] }
     ];
     modal.innerHTML = `<div class="modal-panel">
       <p class="modal-kicker">Diagnostic facultatif</p>
-      <h2 id="diagnosticTitle">Quel cap pour votre image ?</h2>
+      <h2 id="diagnosticTitle">Quel cap pour ton image ?</h2>
       <p class="modal-intro">Quatre choix suffisent pour faire émerger deux pistes. Ce sont des hypothèses à comparer, jamais un verdict.</p>
       <div class="diagnostic-progress" aria-hidden="true">${questions.map((_, i) => `<span class="${i === 0 ? "is-active" : ""}"></span>`).join("")}</div>
       <form id="diagnosticForm">
@@ -112,7 +112,7 @@
     });
     modal.querySelector("#nextDiagnostic").addEventListener("click", () => {
       const current = questions[step];
-      if (!form.elements[current.name].value) { error.textContent = "Choisissez une option, ou explorez librement."; return; }
+      if (!form.elements[current.name].value) { error.textContent = "Choisis une option, ou explore librement."; return; }
       if (step < questions.length - 1) { step += 1; showStep(); return; }
       const data = new FormData(form);
       const answers = Object.fromEntries(data.entries());
@@ -129,15 +129,15 @@
     updateVariantButtons();
     analytics.capture("diagnostic_completed");
     const panel = modal.querySelector(".modal-panel");
-    panel.innerHTML = `<p class="modal-kicker">Deux hypothèses à tester</p><h2 id="diagnosticTitle">Vos deux directions de départ</h2>
-      <p class="modal-intro">Comparez-les avec votre vrai message. Vous pourrez modifier chaque signal et changer d’avis.</p>
+    panel.innerHTML = `<p class="modal-kicker">Deux hypothèses à tester</p><h2 id="diagnosticTitle">Tes deux directions de départ</h2>
+      <p class="modal-intro">Compare-les avec ton vrai message. Tu pourras modifier chaque signal et changer d’avis.</p>
       <div class="result-grid">${top.map((item, index) => {
         const preset = presetById(item.id); const pair = fontById(preset.fontPair);
         return `<article class="direction-result" style="--result-title:'${escapeHtml(pair.title)}'"><span class="rank">Piste ${index + 1}</span><h3>${escapeHtml(preset.label)}</h3><p>${escapeHtml(preset.words)}</p>
           <div class="result-swatches">${preset.colors.map((color) => `<span style="background:${color}"></span>`).join("")}</div>
           <button class="command ${index === 0 ? "primary" : ""}" type="button" data-start-direction="${preset.id}" data-variant="${index ? "b" : "a"}">Commencer avec ${escapeHtml(preset.label)}</button></article>`;
       }).join("")}</div>
-      <p class="hypothesis">Ces pistes traduisent vos réponses en signaux visibles. Elles servent à décider et à tester, pas à définir une vérité objective sur votre marque.</p>
+      <p class="hypothesis">Ces pistes traduisent tes réponses en signaux visibles. Elles servent à décider et à tester, pas à définir une vérité objective sur ta marque.</p>
       <div class="modal-actions"><button class="command" id="closeDiagnosticResults" type="button">Fermer et comparer plus tard</button></div>`;
     panel.querySelectorAll("[data-start-direction]").forEach((button) => button.addEventListener("click", () => {
       applySnapshot(variants[button.dataset.variant], "diagnostic"); closeModal(modal); showToast(`Direction ${presetById(button.dataset.startDirection).label} appliquée.`);
@@ -166,7 +166,7 @@
     const preset = presetById(snapshot.preset); const pair = fontById(snapshot.fontPair);
     const vars = `--compare-bg:${snapshot.colors[0]};--compare-ink:${snapshot.colors[2]};--compare-muted:${snapshot.colors[3]};--compare-accent:${snapshot.colors[4]};--compare-title:'${escapeHtml(pair.title)}';--compare-body:'${escapeHtml(pair.body)}'`;
     return `<article class="comparison-card ${slot === "a" ? "is-mobile-active" : ""}" data-comparison-card="${slot}">
-      <div class="comparison-card-preview" style="${vars}"><div class="compare-nav"><strong>${escapeHtml(snapshot.brand || "Votre marque")}</strong><span>${escapeHtml(snapshot.view === "site" ? "SITE" : snapshot.view === "post" ? "POST" : "OFFRE")}</span></div>
+      <div class="comparison-card-preview" style="${vars}"><div class="compare-nav"><strong>${escapeHtml(snapshot.brand || "Nom de la marque")}</strong><span>${escapeHtml(snapshot.view === "site" ? "SITE" : snapshot.view === "post" ? "POST" : "OFFRE")}</span></div>
         <span class="compare-direction">${escapeHtml(preset.label)}</span><h3>${escapeHtml(snapshot.headline)}</h3><p>${escapeHtml(snapshot.body)}</p><span class="compare-cta">${escapeHtml(snapshot.cta)}</span></div>
       <div class="comparison-meta"><strong>Direction ${slot.toUpperCase()} · ${escapeHtml(preset.label)}</strong><button class="command primary" type="button" data-choose="${slot}">Choisir ${slot.toUpperCase()}</button></div>
     </article>`;
@@ -175,7 +175,7 @@
   function openComparison() {
     if (!variants.a || !variants.b) return;
     const modal = document.querySelector("#comparisonModal");
-    modal.innerHTML = `<div class="modal-panel"><p class="modal-kicker">Même contenu, deux directions</p><h2 id="comparisonTitle">Quelle piste porte mieux votre message ?</h2>
+    modal.innerHTML = `<div class="modal-panel"><p class="modal-kicker">Même contenu, deux directions</p><h2 id="comparisonTitle">Quelle piste porte mieux ton message ?</h2>
       <div class="comparison-switch"><button class="command primary" type="button" data-show-card="a">Direction A</button><button class="command" type="button" data-show-card="b">Direction B</button></div>
       <div class="comparison-grid">${compareCard(variants.a, "a")}${compareCard(variants.b, "b")}</div>
       <div class="modal-actions"><button class="command" id="closeComparison" type="button">Continuer à ajuster</button></div></div>`;
@@ -193,10 +193,10 @@
   function printResult() {
     const snapshot = takeSnapshot(); const preset = presetById(snapshot.preset); const pair = fontById(snapshot.fontPair);
     const imageStyle = imageStyles.find((item) => item.id === snapshot.imageStyle) || noImageStyle;
-    const avoidLabel = diagnosticContext ? ({ cold:"Froide ou impersonnelle", generic:"Générique ou interchangeable", amateur:"Amateur ou bricolée", elitist:"Élitiste ou distante", loud:"Agressive ou bruyante", dated:"Datée ou trop traditionnelle" }[diagnosticContext.answers.avoid]) : "À préciser en confrontant cette direction à votre audience";
+    const avoidLabel = diagnosticContext ? ({ cold:"Froide ou impersonnelle", generic:"Générique ou interchangeable", amateur:"Amateur ou bricolée", elitist:"Élitiste ou distante", loud:"Agressive ou bruyante", dated:"Datée ou trop traditionnelle" }[diagnosticContext.answers.avoid]) : "À préciser en confrontant cette direction au public visé";
     const sheet = document.querySelector("#printSheet");
     sheet.style.cssText = `--print-bg:${snapshot.colors[0]};--print-accent:${snapshot.colors[4]};--print-title:'${escapeHtml(pair.title)}'`;
-    sheet.innerHTML = `<div class="print-cover"><p class="print-kicker">Boussole visuelle · Mini-charte</p><h1>${escapeHtml(snapshot.brand || "Votre marque")}</h1><p><strong>Direction choisie :</strong> ${escapeHtml(preset.label)} — ${escapeHtml(snapshot.words)}</p><p><strong>Contre-image à éviter :</strong> ${escapeHtml(avoidLabel)}</p></div>
+    sheet.innerHTML = `<div class="print-cover"><p class="print-kicker">Boussole visuelle · Mini-charte</p><h1>${escapeHtml(snapshot.brand || "Nom de la marque")}</h1><p><strong>Direction choisie :</strong> ${escapeHtml(preset.label)} — ${escapeHtml(snapshot.words)}</p><p><strong>Contre-image à éviter :</strong> ${escapeHtml(avoidLabel)}</p></div>
       <h2>Signaux visuels</h2><div class="print-swatches">${snapshot.colors.map((color) => `<span class="print-swatch" style="background:${color};color:${color === snapshot.colors[2] ? snapshot.colors[0] : snapshot.colors[2]}">${color}</span>`).join("")}</div>
       <div class="print-grid"><section><h3>Typographies</h3><p>${escapeHtml(pair.title)} pour les titres<br>${escapeHtml(pair.body)} pour les textes</p><h3>Images</h3><p>${escapeHtml(imageStyle.label)} — ${escapeHtml(imageStyle.rule)}</p></section>
       <section><h3>Message testé</h3><p><strong>${escapeHtml(snapshot.headline)}</strong></p><p>${escapeHtml(snapshot.body)}</p><p>Action : ${escapeHtml(snapshot.cta)}</p></section></div>
@@ -212,14 +212,14 @@
     const card = document.createElement("section"); card.className = "feedback-card";
     card.innerHTML = `<button class="close-feedback" type="button" aria-label="Fermer">×</button><h3>${escapeHtml(title)}</h3><div class="feedback-options">${options.map(([value,label]) => `<button type="button" data-answer="${value}">${escapeHtml(label)}</button>`).join("")}</div>`;
     card.querySelector(".close-feedback").addEventListener("click", () => card.remove());
-    card.querySelectorAll("[data-answer]").forEach((button) => button.addEventListener("click", () => { analytics.capture(eventName, { answer: button.dataset.answer }); card.remove(); showToast("Merci, votre réponse nous aide à améliorer la bêta."); }));
+    card.querySelectorAll("[data-answer]").forEach((button) => button.addEventListener("click", () => { analytics.capture(eventName, { answer: button.dataset.answer }); card.remove(); showToast("Merci, ta réponse nous aide à améliorer la bêta."); }));
     document.body.appendChild(card); return card;
   }
 
   function showContextQuestion() {
     if (document.querySelector(".context-card") || entry.source === "share") return;
     const card = document.createElement("section"); card.className = "context-card";
-    card.innerHTML = `<button class="close-context" type="button" aria-label="Ignorer">×</button><h2>Quel support préparez-vous ?</h2><div class="feedback-options">${[["identity","Identité générale"],["site","Site / vente"],["social","Réseaux sociaux"],["offer","Offre / présentation"],["undecided","Pas encore défini"]].map(([value,label]) => `<button type="button" data-answer="${value}">${label}</button>`).join("")}</div>`;
+    card.innerHTML = `<button class="close-context" type="button" aria-label="Ignorer">×</button><h2>Quel support prépares-tu ?</h2><div class="feedback-options">${[["identity","Identité générale"],["site","Site / vente"],["social","Réseaux sociaux"],["offer","Offre / présentation"],["undecided","Pas encore défini"]].map(([value,label]) => `<button type="button" data-answer="${value}">${label}</button>`).join("")}</div>`;
     card.querySelector(".close-context").addEventListener("click", () => card.remove());
     card.querySelectorAll("[data-answer]").forEach((button) => button.addEventListener("click", () => { analytics.capture("feedback_context_answered", { answer: button.dataset.answer }); card.remove(); }));
     document.querySelector(".section-base").before(card);
@@ -227,7 +227,7 @@
 
   function showNextStepQuestion() {
     if (feedbackShown) return; feedbackShown = true;
-    feedbackCard("Que voudriez-vous faire maintenant ?", [["save","Sauvegarder"],["formats","Exporter d’autres formats"],["canva","Appliquer dans Canva"],["compare","Comparer davantage"],["validate","Faire valider / partager"],["done","J’ai terminé"]], "feedback_next_step_answered");
+    feedbackCard("Et maintenant ?", [["save","Sauvegarder"],["formats","Exporter d’autres formats"],["canva","Appliquer dans Canva"],["compare","Comparer davantage"],["validate","Faire valider / partager"],["done","J’ai terminé"]], "feedback_next_step_answered");
   }
 
   function initializeSharedMode() {
@@ -236,7 +236,7 @@
     analytics.capture("shared_direction_opened");
     document.querySelector("#cloneShared").addEventListener("click", () => {
       const url = new URL(window.location.href); url.searchParams.delete("src"); window.history.replaceState(null, "", url);
-      banner.hidden = true; analytics.capture("shared_direction_cloned"); showToast("Votre copie est prête à être modifiée.");
+      banner.hidden = true; analytics.capture("shared_direction_cloned"); showToast("Ta copie est prête à être modifiée.");
     });
     return true;
   }

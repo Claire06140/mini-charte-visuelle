@@ -255,9 +255,8 @@ l'outil, préférer « Trouver deux directions », « Comparer deux pistes » ou
   familiarité forcée, les injonctions répétées et les suppositions sur l'âge.
 - Les pages juridiques ou institutionnelles peuvent utiliser une formulation
   impersonnelle lorsque celle-ci est plus précise.
-- Ne jamais alterner « tu » et « vous » dans un même parcours. Avant la
-  publication des guides, harmoniser les textes actuels de la landing et de
-  l'outil, qui emploient encore principalement le vouvoiement.
+- Ne jamais alterner « tu » et « vous » dans un même parcours. Vérifier la
+  landing, l'outil et leurs messages dynamiques à chaque ajout de texte.
 - Écrire d'abord un français naturel, sans calque de l'anglais.
 - Préférer les mots usuels aux termes d'agence lorsque le terme technique
   n'apporte rien.

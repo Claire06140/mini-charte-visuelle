@@ -32,6 +32,31 @@ test("le guide moodboard reste lisible à 390 px sans débordement de page", asy
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
 });
 
+test("le guide sur les notions reste non indexé et ouvre le diagnostic", async ({ page }) => {
+  await page.goto("/fr/guides/identite-marque-visuelle-charte-graphique/");
+  await expect(page).toHaveTitle("Identité visuelle et charte graphique : quelle différence ?");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", "noindex, follow");
+  await expect(page.getByRole("heading", { name: "Identité de marque, identité visuelle et charte graphique : quelles différences et dans quel ordre les construire ?" })).toBeVisible();
+  await expect(page.locator(".concept-table tbody tr")).toHaveCount(4);
+  await expect(page.getByText("Bureau Clair", { exact: true }).first()).toBeVisible();
+  await page.getByRole("link", { name: "Trouver mon identité visuelle" }).click();
+  await expect(page.getByRole("heading", { name: "Quel cap pour ton image ?" })).toBeVisible();
+});
+
+test("le troisième guide reste lisible à 390 px et absent des pages déjà visibles", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/fr/guides/identite-marque-visuelle-charte-graphique/");
+  await expect(page.getByRole("heading", { name: "Identité de marque, identité visuelle et charte graphique : quelles différences et dans quel ordre les construire ?" })).toBeVisible();
+  await expect(page.locator(".table-scroll")).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+
+  const hiddenGuideHref = "/fr/guides/identite-marque-visuelle-charte-graphique/";
+  for (const path of ["/", "/fr/guides/creer-identite-visuelle-entrepreneur/", "/fr/guides/moodboard-charte-graphique/"]) {
+    await page.goto(path);
+    await expect(page.locator(`a[href="${hiddenGuideHref}"]`)).toHaveCount(0);
+  }
+});
+
 test("la landing ouvre le diagnostic et le parcours renvoie deux pistes", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { name: "Donne une direction claire à ton image." })).toBeVisible();

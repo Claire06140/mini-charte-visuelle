@@ -1,6 +1,6 @@
 # Socle SEO éditorial — Boussole visuelle
 
-Dernière mise à jour : 3 août 2026.
+Dernière mise à jour : 5 août 2026.
 
 ## 1. Objectif
 
@@ -278,8 +278,9 @@ Chaque article doit pouvoir être lu seul. Le maillage sert à proposer l'étape
 
 1. Créer son identité visuelle quand on est entrepreneur.
 2. Comment créer un moodboard de marque et le transformer en charte graphique ?
-3. Traduire son positionnement en direction visuelle.
-4. Identité de marque, identité visuelle et charte graphique.
+3. Identité de marque, identité visuelle et charte graphique. Ce guide ciblé
+   sert de troisième cas pour éprouver le workflow après deux guides piliers.
+4. Traduire son positionnement en direction visuelle.
 5. Du persona à la proposition de valeur et au positionnement.
 6. Choisir et tester entre deux pistes.
 7. Réévaluer l'article autonome « Persona et identité visuelle » après les premières données.

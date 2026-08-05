@@ -184,14 +184,17 @@ la landing.
 1. Article 4 — créer son identité visuelle avant Canva.
 2. Article 8 — créer un moodboard de marque et le transformer en charte
    graphique.
-3. Article 5 — traduire son positionnement en direction visuelle.
-4. Article 1 — distinguer identité de marque, identité visuelle et charte.
+3. Article 1 — distinguer identité de marque, identité visuelle et charte. Son
+   passage avant l'article 5 sert à éprouver le workflow sur une intention
+   ciblée après deux guides piliers ; la donnée mesurée FR-042 permet ce choix.
+4. Article 5 — traduire son positionnement en direction visuelle.
 5. Article 2 — persona, proposition de valeur, positionnement et perception.
 6. Article combiné 6 + 7 — choisir et tester une direction.
 7. Réévaluer l'article 3 après données quantitatives et premiers retours.
 
-Cet ordre pourra évoluer avec Search Console, mais les articles 4 et 8 sont
-suffisamment étayés pour lancer la phase de rédaction.
+Cet ordre pourra évoluer avec Search Console. Les articles 4, 8 et 1 sont
+maintenant suffisamment étayés pour la rédaction ; ce changement d'ordre est
+un choix d'apprentissage éditorial, pas la conséquence d'un nouveau volume.
 
 ## Registre des sources SERP
 

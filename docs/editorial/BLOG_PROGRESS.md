@@ -19,10 +19,10 @@ Tout agent intervenant sur les guides doit lire, dans cet ordre :
 
 ## État de la phase éditoriale
 
-**Phase actuelle :** les brouillons des articles 4 et 8 sont intégrés sur leurs
-URL de relecture avec `noindex`. Claire peut maintenant comparer les deux
-articles avant d'ajuster le processus éditorial. Aucun guide n'est encore prêt
-à être indexé.
+**Phase actuelle :** les brouillons des articles 4, 8 et 1 sont intégrés sur
+leurs URL de relecture avec `noindex`. Le troisième guide adopte volontairement
+un format ciblé afin que Claire puisse comparer trois cas avant d'ajuster le
+processus éditorial. Aucun guide n'est encore prêt à être indexé.
 
 | Élément | État | Prochaine action |
 |---|---|---|
@@ -33,9 +33,10 @@ articles avant d'ajuster le processus éditorial. Aucun guide n'est encore prêt
 | Voix et ton de Claire | Validés sur le plan | Tutoiement direct mais adulte retenu ; le contrôler à nouveau sur le premier brouillon. |
 | Modèle d'article | Créé | L'utiliser pour chaque brief et conserver les écarts utiles observés à la relecture. |
 | Skill de rédaction | Créé et validé | L'invoquer avec `$boussole-blog-post` pour chaque nouveau guide. |
-| Architecture `/fr/guides/` | Partiellement implémentée | Deux routes existent ; créer l'index, finaliser les canonical et préparer le sitemap avant indexation. |
+| Architecture `/fr/guides/` | Partiellement implémentée | Trois routes existent ; créer l'index, finaliser les canonical et préparer le sitemap avant indexation. |
 | Premier article | Brouillon intégré, statut `review` | Claire relit la page publique non indexée ; intégrer ses retours avant le statut `ready`. |
 | Deuxième article | Brouillon intégré, statut `review` | Claire relit la page et compare ses forces et faiblesses avec l'article 4. |
+| Troisième article | Brouillon ciblé intégré, statut `review` | Comparer son rythme, sa densité et sa structure aux deux guides piliers avant de modifier le workflow. |
 
 ## Automation quotidienne Semrush
 
@@ -89,15 +90,16 @@ de skills ou de tests.
 1. Article 4 — créer son identité visuelle avant Canva.
 2. Article 8 — créer un moodboard de marque et le transformer en charte
    graphique.
-3. Article 5 — traduire son positionnement en direction visuelle.
-4. Article 1 — distinguer identité de marque, identité visuelle et charte.
+3. Article 1 — distinguer identité de marque, identité visuelle et charte,
+   avancé pour tester le workflow sur une question ciblée.
+4. Article 5 — traduire son positionnement en direction visuelle.
 5. Article 2 — persona, proposition de valeur, positionnement et perception.
 6. Article combiné 6 + 7 — choisir et tester une direction.
 7. Réévaluer l'article 3 avec les premières données Search Console.
 
-Cet ordre n'est pas un calendrier de publication automatique. Les deux premiers
-articles sont les seuls considérés comme prêts à entrer dans la phase de
-préparation détaillée.
+Cet ordre n'est pas un calendrier de publication automatique. Les trois
+premiers articles sont maintenant en relecture ; l'article 5 reste le prochain
+sujet prévu après la comparaison du processus.
 
 ## Article 4 — premier article en relecture
 
@@ -161,16 +163,43 @@ préparation détaillée.
 - **CTA proposé :** « Créer ma direction visuelle », vers le diagnostic avec
   l'origine analytics fermée `guide`.
 
+## Article 1 — troisième article en relecture
+
+- **Brief et plan :**
+  [`briefs/article-1-identite-marque-visuelle-charte-graphique.md`](briefs/article-1-identite-marque-visuelle-charte-graphique.md),
+  statut `review`.
+- **Brouillon source :**
+  [`drafts/article-1-identite-marque-visuelle-charte-graphique.md`](drafts/article-1-identite-marque-visuelle-charte-graphique.md).
+- **URL de relecture :**
+  `/fr/guides/identite-marque-visuelle-charte-graphique/`, avec
+  `noindex, follow`, hors sitemap et sans lien entrant visible depuis les pages
+  existantes.
+- **Rôle :** carte conceptuelle et ordre de construction entre identité de
+  marque, identité visuelle, charte graphique et image de marque.
+- **Signal principal mesuré :** `différence entre identité visuelle et charte
+  graphique`, 20 recherches mensuelles, KD `n/a`, Semrush France, ordinateur,
+  4 août 2026.
+- **Format testé :** guide ciblé d'environ 1 600 mots utiles, avec une table de
+  notions et un exemple compact à la place d'un long cas conducteur.
+- **Exemple :** Bureau Clair, activité fictive d'accompagnement administratif,
+  montrant quatre livrables distincts sans simuler de résultat client.
+- **CTA :** « Trouver mon identité visuelle », vers le diagnostic avec
+  l'origine analytics fermée `guide`.
+- **Décision anti-cannibalisation :** l'article 1 possède les différences de
+  vocabulaire et l'ordre général. Les méthodes détaillées restent aux articles
+  4, 5 et 8.
+
 ## Étapes éditoriales immédiates
 
-1. Faire relire par Claire le brouillon intégré à l'URL
-   `/fr/guides/creer-identite-visuelle-entrepreneur/`.
-2. Intégrer ses retours sur le fond, le ton, l'exemple et le CTA sans retirer
-   `noindex` pendant la phase de relecture.
-3. Relire l'article 8 sur `/fr/guides/moodboard-charte-graphique/`, puis relever
-   les enseignements communs et les différences avec l'article 4 avant de
-   modifier les règles ou le skill.
-4. Valider la biographie, le domaine et les canonical avant de décider du
+1. Relire les trois URL de relecture et noter séparément ce qui relève du fond,
+   du ton, de la structure de page et du workflow.
+2. Comparer les deux guides piliers à l'article 1 ciblé : nécessité de
+   l'exemple conducteur, longueur, nombre de composants et densité des sources.
+3. Modifier `CONTENT_RULES.md`, `ARTICLE_TEMPLATE.md` ou le skill uniquement
+   lorsque le même enseignement est confirmé par plusieurs articles, ou quand
+   le troisième cas révèle une règle trop rigide.
+4. Intégrer les retours sans retirer `noindex` pendant la relecture.
+5. Valider la biographie, le domaine et les canonical avant de décider du
    statut `ready` et d'une éventuelle indexation.
 
 ## Étapes entre brouillon et publication
@@ -261,3 +290,11 @@ Un guide est prêt lorsque :
   avec `noindex, follow`, hors sitemap et avec le CTA « Créer ma direction
   visuelle ». Statut `review` ; la prochaine étape est une comparaison humaine
   des deux premiers articles avant d'ajuster le processus de rédaction.
+- 2026-08-05 — L'article 1 a été avancé avant l'article 5 afin de fournir un
+  troisième cas réellement différent pour l'évaluation du workflow. Son brief,
+  son brouillon ciblé et sa page de relecture ont été créés à partir de FR-042
+  et des familles mesurées `identité visuelle` et `charte graphique`. La page
+  `/fr/guides/identite-marque-visuelle-charte-graphique/` reste en
+  `noindex, follow`, hors sitemap et sans lien entrant visible. Aucun changement
+  définitif du skill ou des règles éditoriales n'est appliqué avant la
+  comparaison des trois guides.
